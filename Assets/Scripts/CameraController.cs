@@ -13,7 +13,8 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         transform.position = new Vector3(0, currentZoom, -currentZoom);
-        transform.LookAt(Vector3.zero);
+        transform.LookAt(Vector3.zero); 
+        
     }
 
     void Update()
