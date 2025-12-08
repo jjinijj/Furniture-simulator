@@ -15,6 +15,7 @@ public class FurniturePlacer : MonoBehaviour
 
     private int selectedFurnitureIndex = 0; // 현재 선택된 가구 인덱스
     private Camera mainCamera;
+    private GameObject dummyFuniture;
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class FurniturePlacer : MonoBehaviour
         }
 
         // 숫자키로 가구 선택 (1-5)
+        int beforeSelectedIndex = selectedFurnitureIndex;
         if (Input.GetKeyDown(KeyCode.Alpha1)) selectedFurnitureIndex = 0;
         if (Input.GetKeyDown(KeyCode.Alpha2)) selectedFurnitureIndex = 1;
         if (Input.GetKeyDown(KeyCode.Alpha3)) selectedFurnitureIndex = 2;
@@ -51,11 +53,43 @@ public class FurniturePlacer : MonoBehaviour
             text += ">>";
 
             selectedMark.text = text;
+
+            ShowDummyFurniture(beforeSelectedIndex != selectedFurnitureIndex);
         }
     }
 
     void PlaceFurniture()
     {
+        if(dummyFuniture != null)
+        {
+            Vector3 furniturePosition = dummyFuniture.transform.position;
+            furniturePosition.y -= 0.5f;
+            dummyFuniture.transform.position = furniturePosition;
+            dummyFuniture = null;
+        }
+    }
+
+    void ShowDummyFurniture(bool isChanged)
+    {
+        if (isChanged)
+        {
+            GameObject.Destroy(dummyFuniture);
+        }
+
+        if(dummyFuniture == null)
+        {
+            if(selectedFurnitureIndex < furniturePrefabs.Length)
+            {
+                dummyFuniture = Instantiate(
+                    furniturePrefabs[selectedFurnitureIndex],
+                    Vector3.zero,
+                    Quaternion.identity
+                );
+
+                Debug.Log($"가구선택 : {dummyFuniture.name}");
+            }
+        }
+
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -63,19 +97,10 @@ public class FurniturePlacer : MonoBehaviour
         {
             Vector3 spawnPosition = hit.point;
             spawnPosition.y += 0.5f;
-            
-            if(selectedFurnitureIndex < furniturePrefabs.Length)
-            {
-                GameObject furniture = Instantiate(
-                    furniturePrefabs[selectedFurnitureIndex],
-                    spawnPosition,
-                    Quaternion.identity
-                );
 
-                Debug.Log($"가구배치 : {furniture.name} at {spawnPosition}");
-            }
+            dummyFuniture.transform.position = spawnPosition;
+            dummyFuniture.transform.rotation = Quaternion.identity;
         }
-
     }
 
 }
