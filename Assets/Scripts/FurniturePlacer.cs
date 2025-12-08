@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -8,6 +9,9 @@ public class FurniturePlacer : MonoBehaviour
 
     [Header("Placement Settings")]
     public LayerMask floorLayer; // 바닥 레이어
+
+    [Header("Selected Mark")]
+    public TextMeshProUGUI selectedMark;
 
     private int selectedFurnitureIndex = 0; // 현재 선택된 가구 인덱스
     private Camera mainCamera;
@@ -34,6 +38,20 @@ public class FurniturePlacer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha6)) selectedFurnitureIndex = 5;
         if (Input.GetKeyDown(KeyCode.Alpha7)) selectedFurnitureIndex = 6;
         if (Input.GetKeyDown(KeyCode.Alpha8)) selectedFurnitureIndex = 7;
+
+        if(selectedFurnitureIndex >= 0 && selectedFurnitureIndex < furniturePrefabs.Length)
+        {
+            string text = "";
+
+            for(int i = 0; i < selectedFurnitureIndex; ++i)
+            {
+                text += "\n";
+            }
+
+            text += ">>";
+
+            selectedMark.text = text;
+        }
     }
 
     void PlaceFurniture()
