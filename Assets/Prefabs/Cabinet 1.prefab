@@ -48,6 +48,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3559909895095799887, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -2496925144845629292, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -2064682264359837954, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -1576786344423528955, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
       propertyPath: m_LocalRotation.w
       value: -1
@@ -67,6 +79,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
       propertyPath: m_Name
       value: Cabinet 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
       propertyPath: m_TagString
@@ -111,6 +127,10 @@ PrefabInstance:
     - target: {fileID: 7271533707502598926, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9120118014617731762, guid: a5797fcc5b78f704b8d9b5e8c01a5bea, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

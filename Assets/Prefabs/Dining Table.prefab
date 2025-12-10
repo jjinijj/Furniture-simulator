@@ -53,6 +53,10 @@ PrefabInstance:
       value: Dining Table
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f544d19afb4da6449b35f030b13ad48b, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f544d19afb4da6449b35f030b13ad48b, type: 3}
       propertyPath: m_TagString
       value: Furniture
       objectReference: {fileID: 0}

@@ -9,25 +9,23 @@ public class Furniture : MonoBehaviour
 
     private bool isSelected = false;
     private Renderer furnitureRenderer;
-    private List<Material> furnitureMaterial;
-    private List<Color> originalcolor;
+    private Material[] furnitureMaterials;
+    private Color[] originalcolors;
 
     void Start()
     {
         furnitureRenderer = GetComponentInChildren<MeshRenderer>();
         if (furnitureRenderer)
         {
-            furnitureMaterial = new List<Material>();
-            furnitureRenderer.GetMaterials(furnitureMaterial);
+            furnitureMaterials = furnitureRenderer.materials;
 
-            originalcolor = new List<Color>();
-
-            foreach(Material material in furnitureMaterial)
+            originalcolors = new Color[furnitureMaterials.Length];
+            for (int i = 0; i < furnitureMaterials.Length; i++)
             {
-                originalcolor.Add(material.color);
+                originalcolors[i] = furnitureMaterials[i].color;
             }
 
-            if(furnitureMaterial == null)
+            if(furnitureMaterials.Length == 0)
             {
                 Debug.LogError($"{gameObject.name} has not Material.");
             }
@@ -54,25 +52,31 @@ public class Furniture : MonoBehaviour
 
     void UpdateVisual()
     {
+        if(furnitureMaterials == null)
+            return;
+
         if (isSelected)
         {
-            for(int i = 0; i < furnitureMaterial.Count; ++i)
+            for(int i = 0; i < furnitureMaterials.Length; ++i)
             {
-                furnitureMaterial[i].color = selectedColor;
+                furnitureMaterials[i].color = selectedColor;
             }
         }
         else
         {
-             for(int i = 0; i < furnitureMaterial.Count; ++i)
+             for(int i = 0; i < furnitureMaterials.Length; ++i)
             {
-                furnitureMaterial[i].color = originalcolor[i];
+                furnitureMaterials[i].color = originalcolors[i];
             }
         }
     }
 
     void OnDestroy()
     {
-        foreach(Material material in furnitureMaterial)
+        if(furnitureMaterials == null)
+            return;
+            
+        foreach(Material material in furnitureMaterials)
         {
             Destroy(material);
         }

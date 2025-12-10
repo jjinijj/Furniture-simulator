@@ -29,7 +29,7 @@ public class FurnitureSelector : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if(Physics.Raycast(ray, out hit))
+        if(Physics.Raycast(ray, out hit, furnitureLayer))
         {
             Furniture furniture = hit.collider.GetComponent<Furniture>();
 
@@ -57,11 +57,16 @@ public class FurnitureSelector : MonoBehaviour
 
     void UpdateUI()
     {
-        if (selectionInfoText)
+        if (selectionInfoText == null)
         {
-            selectionInfoText.text = (selectedFurniture) ? $"select {selectedFurniture.name}" : "deselected";
+            if (selectedFurniture != null)
+            {
+                selectionInfoText.text = $"Selected: {selectedFurniture.gameObject.name}";
+            }
+            else
+            {
+                selectionInfoText.text = "No selection (Click furniture to select)";
+            }
         }
     }
-
-
 }
