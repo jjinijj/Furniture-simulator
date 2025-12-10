@@ -53,6 +53,10 @@ PrefabInstance:
       value: Bookcase
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4f58f288b7209fc47b50978a87654102, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4f58f288b7209fc47b50978a87654102, type: 3}
       propertyPath: m_TagString
       value: Furniture
       objectReference: {fileID: 0}

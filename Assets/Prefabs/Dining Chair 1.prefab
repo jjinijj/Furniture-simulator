@@ -69,6 +69,10 @@ PrefabInstance:
       value: Dining Chair 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 232b872d0d53e2c4bb5e9d556a927018, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 232b872d0d53e2c4bb5e9d556a927018, type: 3}
       propertyPath: m_TagString
       value: Furniture
       objectReference: {fileID: 0}

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1802194872204254859}
   - component: {fileID: 3476834419849834193}
   - component: {fileID: 711958451781616409}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Chair 4
   m_TagString: Furniture
   m_Icon: {fileID: 0}

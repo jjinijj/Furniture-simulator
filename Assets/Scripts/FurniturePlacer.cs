@@ -11,6 +11,7 @@ public class FurniturePlacer : MonoBehaviour
 
     [Header("Placement Settings")]
     public LayerMask floorLayer; // 바닥 레이어
+    public LayerMask furnitureLayer; // 가구 레이어
 
     [Header("UI")]
     public TextMeshProUGUI selectedMark;
@@ -20,7 +21,8 @@ public class FurniturePlacer : MonoBehaviour
     private Camera mainCamera;
     private GameObject ghostFuniture;
     private FurnitureSelector furnitureSelector;
-    private bool isPlacementMode = false; 
+    private bool isPlacementMode = false; // 배치모드 여부
+    private bool canPlace = true;   // 설치 가능 여부
 
     void Start()
     {
@@ -81,6 +83,19 @@ public class FurniturePlacer : MonoBehaviour
             else
             {
                 furnitureSelector.DeselectCurrentFurniture();
+            }
+        }
+
+        // 가구 회전
+        if(isPlacementMode && ghostFuniture != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                ghostFuniture.transform.Rotate(0, -90, 0);
+            }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                ghostFuniture.transform.Rotate(0, 90, 0);
             }
         }
     }
@@ -150,35 +165,6 @@ public class FurniturePlacer : MonoBehaviour
         {
             Destroy(furniture);
         }
-
-        // 반투명 효과
-        SetGhostTransparency();
-    }
-
-    void SetGhostTransparency()
-    {
-        Renderer[] renderers = ghostFuniture.GetComponentsInChildren<Renderer>();
-        foreach (Renderer rend in renderers)
-        {
-            Material[] materials = rend.materials;
-            foreach (Material mat in materials)
-            {
-                // Transparent 모드로 변경
-                mat.SetFloat("_Mode", 3);  // Transparent
-                mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                mat.SetInt("_ZWrite", 0);
-                mat.DisableKeyword("_ALPHATEST_ON");
-                mat.EnableKeyword("_ALPHABLEND_ON");
-                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.renderQueue = 3000;
-
-                // 색상 변경 (반투명)
-                Color color = mat.color;
-                color.a = ghostColor.a;
-                mat.color = color;
-            }
-        }
     }
 
     void UpdateGhostPosition()
@@ -198,11 +184,45 @@ public class FurniturePlacer : MonoBehaviour
 
             ghostFuniture.transform.position = position;
         }
+
+        // 충돌 감지
+        canPlace = !IsOverlapping();
+        Color guideColor = canPlace ? Color.green : Color.red;
+
+        Renderer[] renderers = ghostFuniture.GetComponentsInChildren<Renderer>();
+        foreach (Renderer rend in renderers)
+        {
+            Material[] materials = rend.materials;
+            foreach (Material mat in materials)
+            {
+                mat.color = guideColor;
+            }
+        }
+    }
+
+    bool IsOverlapping()
+    {
+        // Overlap 체크
+        Collider[] colliders = Physics.OverlapBox(
+            ghostFuniture.transform.position,
+            Vector3.one * 0.5f,
+            ghostFuniture.transform.rotation,
+            furnitureLayer  // ← 가구만 감지!
+    );
+    
+        return colliders.Length > 0;
     }
 
     void PlaceFurniture()
     {
         if(ghostFuniture == null)
+        {
+            return;
+        }
+
+        Debug.Log(canPlace);
+        // 기존 가구와 충돌 중일때는 설치 안함
+        if(canPlace == false)
         {
             return;
         }

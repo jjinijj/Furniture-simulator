@@ -48,9 +48,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3559909895095799887, guid: 5dc347d7d243c454ca261089bf101a08, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -2064682264359837954, guid: 5dc347d7d243c454ca261089bf101a08, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5dc347d7d243c454ca261089bf101a08, type: 3}
       propertyPath: m_Name
       value: Cabinet 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5dc347d7d243c454ca261089bf101a08, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5dc347d7d243c454ca261089bf101a08, type: 3}
       propertyPath: m_TagString

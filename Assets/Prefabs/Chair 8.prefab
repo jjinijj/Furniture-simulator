@@ -53,6 +53,10 @@ PrefabInstance:
       value: Chair 8
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 81d158cf75a51904d96790740aa3c8a7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 81d158cf75a51904d96790740aa3c8a7, type: 3}
       propertyPath: m_TagString
       value: Furniture
       objectReference: {fileID: 0}
