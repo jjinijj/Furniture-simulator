@@ -13,24 +13,50 @@ public class FurniturePlacer : MonoBehaviour
     [Header("Selected Mark")]
     public TextMeshProUGUI selectedMark;
 
-    private int selectedFurnitureIndex = 0; // 현재 선택된 가구 인덱스
+    private int selectedFurnitureIndex = -1; // 현재 선택된 가구 인덱스
     private Camera mainCamera;
     private GameObject dummyFuniture;
+    private FurnitureSelector furnitureSelector;
 
     void Start()
     {
         mainCamera = Camera.main;
-    }
+        selectedMark.text = "";
+        furnitureSelector = GetComponent<FurnitureSelector>();
 
+        if(furnitureSelector == null)
+        {
+            Debug.LogError("funitureSelector is Null");
+        }
+    }
+    
     void Update()
     {
         // 마우스 좌클릭
         if (Input.GetMouseButtonDown(0))
         {
-            PlaceFurniture();
+            if(selectedFurnitureIndex >= 0 && selectedFurnitureIndex < furniturePrefabs.Length)
+                PlaceFurniture();
+            else
+                furnitureSelector.TrySelectFurniture();
         }
 
-        // 숫자키로 가구 선택 (1-5)
+        // 가구 설치 모드 해제
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(selectedFurnitureIndex >= 0 && selectedFurnitureIndex < furniturePrefabs.Length)
+            {
+                selectedFurnitureIndex = -1;
+                selectedMark.text = "";
+                Destroy(dummyFuniture);
+            }
+            else
+            {
+                furnitureSelector.DeselectCurrentFurniture();
+            }
+        }
+
+        // 숫자키로 가구 선택 (1-8)
         int beforeSelectedIndex = selectedFurnitureIndex;
         if (Input.GetKeyDown(KeyCode.Alpha1)) selectedFurnitureIndex = 0;
         if (Input.GetKeyDown(KeyCode.Alpha2)) selectedFurnitureIndex = 1;
@@ -43,6 +69,10 @@ public class FurniturePlacer : MonoBehaviour
 
         if(selectedFurnitureIndex >= 0 && selectedFurnitureIndex < furniturePrefabs.Length)
         {
+            furnitureSelector.DeselectCurrentFurniture();
+         
+            ShowDummyFurniture(beforeSelectedIndex != selectedFurnitureIndex);
+
             string text = "";
 
             for(int i = 0; i < selectedFurnitureIndex; ++i)
@@ -53,18 +83,17 @@ public class FurniturePlacer : MonoBehaviour
             text += ">>";
 
             selectedMark.text = text;
-
-            ShowDummyFurniture(beforeSelectedIndex != selectedFurnitureIndex);
         }
     }
 
     void PlaceFurniture()
     {
-        if(dummyFuniture != null)
+        if(dummyFuniture)
         {
             Vector3 furniturePosition = dummyFuniture.transform.position;
             furniturePosition.y -= 0.5f;
             dummyFuniture.transform.position = furniturePosition;
+            dummyFuniture.gameObject.AddComponent<Furniture>();
             dummyFuniture = null;
         }
     }
