@@ -1,9 +1,4 @@
 using TMPro;
-using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.ShaderKeywordFilter;
-using UnityEditor.UIElements;
 using UnityEngine;
 
 public class FurniturePlacer : MonoBehaviour
@@ -21,9 +16,8 @@ public class FurniturePlacer : MonoBehaviour
 
     private int selectedFurnitureIndex = -1; // 현재 선택된 가구 인덱스
     private Camera mainCamera;
-    private GameObject ghostFuniture;
+    private GameObject ghostFurniture;
     private FurnitureSelector furnitureSelector;
-    private bool isPlacementMode = false; // 배치모드 여부
     private enum MODE { PLACE_MODE, MOVE_MODE , NONE};
     private MODE currentMode = MODE.NONE;
     private bool canPlace = true;   // 설치 가능 여부
@@ -66,6 +60,19 @@ public class FurniturePlacer : MonoBehaviour
 
         if(currentMode == MODE.PLACE_MODE)
         {
+            // 가구 회전
+            if(currentMode == MODE.PLACE_MODE && ghostFurniture != null)
+            {
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    ghostFurniture.transform.Rotate(0, -90, 0);
+                }
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    ghostFurniture.transform.Rotate(0, 90, 0);
+                }
+            }
+
             if (Input.GetMouseButtonDown(0))
             {
                 PlaceFurniture();
@@ -96,18 +103,7 @@ public class FurniturePlacer : MonoBehaviour
             furnitureSelector.DeselectCurrentFurniture();
         }
 
-        // 가구 회전
-        if(currentMode == MODE.PLACE_MODE && ghostFuniture != null)
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                ghostFuniture.transform.Rotate(0, -90, 0);
-            }
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                ghostFuniture.transform.Rotate(0, 90, 0);
-            }
-        }
+        
     }
 
     int GetNumberKeyInput()
@@ -132,7 +128,6 @@ public class FurniturePlacer : MonoBehaviour
 
         // 배치모드
         selectedFurnitureIndex = index;
-        isPlacementMode = true;
         currentMode = MODE.PLACE_MODE;
 
         // 선택모드 해제
@@ -150,28 +145,28 @@ public class FurniturePlacer : MonoBehaviour
     void CreateGhostFurniture()
     {
         // 기존 고스트 제거
-        if (ghostFuniture)
+        if (ghostFurniture)
         {
-            Destroy(ghostFuniture);
+            Destroy(ghostFurniture);
         }
         
         // 고스트 생성
-        ghostFuniture = Instantiate(
+        ghostFurniture = Instantiate(
             furniturePrefabs[selectedFurnitureIndex],
             Vector3.zero,
             Quaternion.identity
         );
 
-        ghostFuniture.name = "Ghost_" + furniturePrefabs[selectedFurnitureIndex].name;
+        ghostFurniture.name = "Ghost_" + furniturePrefabs[selectedFurnitureIndex].name;
 
         // 충돌 방지
-        Collider[] colliders = ghostFuniture.GetComponents<Collider>();
+        Collider[] colliders = ghostFurniture.GetComponentsInChildren<Collider>();
         foreach(Collider col in colliders)
         {
             col.enabled = false;
         }
 
-        Furniture furniture = ghostFuniture.GetComponent<Furniture>();
+        Furniture furniture = ghostFurniture.GetComponent<Furniture>();
         if (furniture)
         {
             Destroy(furniture);
@@ -180,7 +175,7 @@ public class FurniturePlacer : MonoBehaviour
 
     void UpdateGhostPosition()
     {
-        if(ghostFuniture == null)
+        if(ghostFurniture == null)
         {
             return;
         }
@@ -193,14 +188,14 @@ public class FurniturePlacer : MonoBehaviour
             Vector3 position = hit.point;
             position.y += 0.5f;
 
-            ghostFuniture.transform.position = position;
+            ghostFurniture.transform.position = position;
         }
 
         // 충돌 감지
         canPlace = !IsOverlapping();
         Color guideColor = canPlace ? Color.green : Color.red;
 
-        Renderer[] renderers = ghostFuniture.GetComponentsInChildren<Renderer>();
+        Renderer[] renderers = ghostFurniture.GetComponentsInChildren<Renderer>();
         foreach (Renderer rend in renderers)
         {
             Material[] materials = rend.materials;
@@ -213,20 +208,23 @@ public class FurniturePlacer : MonoBehaviour
 
     bool IsOverlapping()
     {
+        if (ghostFurniture == null)
+            return false;
+        
         // Overlap 체크
         Collider[] colliders = Physics.OverlapBox(
-            ghostFuniture.transform.position,
+            ghostFurniture.transform.position,
             Vector3.one * 0.5f,
-            ghostFuniture.transform.rotation,
+            ghostFurniture.transform.rotation,
             furnitureLayer  // ← 가구만 감지!
-    );
+        );
     
         return colliders.Length > 0;
     }
 
     void PlaceFurniture()
     {
-        if(ghostFuniture == null)
+        if(ghostFurniture == null)
         {
             return;
         }
@@ -238,30 +236,32 @@ public class FurniturePlacer : MonoBehaviour
             return;
         }
         
-        Vector3 position = ghostFuniture.transform.position;
+        Vector3 position = ghostFurniture.transform.position;
         position.y -= 0.5f;
         GameObject furniture = Instantiate(
             furniturePrefabs[selectedFurnitureIndex],
             position,
-            ghostFuniture.transform.rotation
+            ghostFurniture.transform.rotation
         );
 
-        furniture.AddComponent<Furniture>();
+        if(furniture.GetComponent<Furniture>() == null)
+        {
+            furniture.AddComponent<Furniture>();
+        }
 
         Debug.Log($"가구 배치: {furniture.name} at {position}");
     }
 
     void ExitPlacementMode()
     {
-        isPlacementMode = false;
         currentMode = MODE.NONE;
         selectedFurnitureIndex = -1;
 
         // 고스트 제거
-        if (ghostFuniture != null)
+        if (ghostFurniture != null)
         {
-            Destroy(ghostFuniture);
-            ghostFuniture = null;
+            Destroy(ghostFurniture);
+            ghostFurniture = null;
         }
 
         // UI 초기화
@@ -290,9 +290,9 @@ public class FurniturePlacer : MonoBehaviour
     void OnDestroy()
     {
         // 고스트 정리
-        if (ghostFuniture != null)
+        if (ghostFurniture != null)
         {
-            Destroy(ghostFuniture);
+            Destroy(ghostFurniture);
         }
     }
 }
