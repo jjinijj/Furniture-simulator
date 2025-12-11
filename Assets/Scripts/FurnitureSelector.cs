@@ -5,18 +5,20 @@ public class FurnitureSelector : MonoBehaviour
 {
     [Header("Selection Settings")]
     public LayerMask furnitureLayer;
+    public LayerMask floorLayer;
 
     [Header("UI")]
     public TextMeshProUGUI selectionInfoText;
 
     private Furniture selectedFurniture = null;
     private Camera mainCamera;
+    private bool isDragging = false;
 
     void Start()
     {
         mainCamera = Camera.main;
 
-        if (selectionInfoText)
+        if (selectionInfoText == null)
         {
             Debug.LogError($"selectionInfoText is Null.");
         }
@@ -29,12 +31,42 @@ public class FurnitureSelector : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if(Physics.Raycast(ray, out hit, furnitureLayer))
+        if(Physics.Raycast(ray, out hit, Mathf.Infinity, furnitureLayer))
         {
             Furniture furniture = hit.collider.GetComponent<Furniture>();
 
             if(furniture)   SelectFurniture(furniture);
             else            DeselectCurrentFurniture(); 
+        }
+    }
+
+    public void UpdateDrag()
+    {
+        if(selectedFurniture == null)
+            return;
+
+        if(isDragging == false)
+        {
+            isDragging = true;
+            selectedFurniture.StartDrag();
+        }
+
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if(Physics.Raycast(ray, out hit, Mathf.Infinity, floorLayer))
+        {
+            selectedFurniture.MoveTo(hit.point);
+        }
+    }
+
+    public void EndDrag()
+    {
+        if(selectedFurniture != null && isDragging)
+        {
+            selectedFurniture.StopDrag();
+            DeselectCurrentFurniture();
+            isDragging = false;
         }
     }
 
@@ -45,6 +77,7 @@ public class FurnitureSelector : MonoBehaviour
 
         selectedFurniture = furniture;
         selectedFurniture.Select();
+        UpdateUI();
     }
 
     public void DeselectCurrentFurniture()
@@ -53,13 +86,14 @@ public class FurnitureSelector : MonoBehaviour
             selectedFurniture.Deselect();
         
         selectedFurniture = null;
+        UpdateUI();
     }
 
     void UpdateUI()
     {
-        if (selectionInfoText == null)
+        if (selectionInfoText != null)
         {
-            if (selectedFurniture != null)
+            if (selectedFurniture)
             {
                 selectionInfoText.text = $"Selected: {selectedFurniture.gameObject.name}";
             }

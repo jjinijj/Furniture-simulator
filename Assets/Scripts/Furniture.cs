@@ -8,6 +8,8 @@ public class Furniture : MonoBehaviour
     public Color selectedColor = Color.cyan;
 
     private bool isSelected = false;
+    private bool isDragging = false;
+    private float heightOffset = 0.5f;
     private Renderer furnitureRenderer;
     private Material[] furnitureMaterials;
     private Color[] originalcolors;
@@ -69,6 +71,38 @@ public class Furniture : MonoBehaviour
                 furnitureMaterials[i].color = originalcolors[i];
             }
         }
+    }
+
+// 드래그 시작
+    public void StartDrag()
+    {
+        isDragging = true;
+        Debug.Log($"{gameObject.name} 드래그 시작");
+    }
+    
+    // 위치 이동
+    public void MoveTo(Vector3 floorPosition)
+    {
+        if (!isDragging) return;
+        Debug.Log($"드래그 업데이트 {floorPosition}");
+        Vector3 newPosition = floorPosition;
+        newPosition.y += heightOffset;
+        
+        transform.position = newPosition;
+    }
+    
+    // 드래그 끝
+    public void StopDrag()
+    {
+        isDragging = false;
+        isSelected = false;
+        Debug.Log($"{gameObject.name} 드래그 완료");
+
+        Vector3 newPosition = transform.position;
+        newPosition.y -= heightOffset;
+        
+        transform.position = newPosition;
+        UpdateVisual();
     }
 
     void OnDestroy()

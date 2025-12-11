@@ -958,7 +958,11 @@ MonoBehaviour:
   floorLayer:
     serializedVersion: 2
     m_Bits: 64
+  furnitureLayer:
+    serializedVersion: 2
+    m_Bits: 128
   selectedMark: {fileID: 421236509}
+  ghostColor: {r: 1, g: 1, b: 1, a: 0.5}
 --- !u!4 &623660553
 Transform:
   m_ObjectHideFlags: 0
@@ -989,6 +993,9 @@ MonoBehaviour:
   furnitureLayer:
     serializedVersion: 2
     m_Bits: 128
+  floorLayer:
+    serializedVersion: 2
+    m_Bits: 0
   selectionInfoText: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
