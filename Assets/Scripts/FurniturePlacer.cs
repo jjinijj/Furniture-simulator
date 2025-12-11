@@ -1,6 +1,8 @@
 using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEditor.UIElements;
 using UnityEngine;
 
@@ -22,6 +24,8 @@ public class FurniturePlacer : MonoBehaviour
     private GameObject ghostFuniture;
     private FurnitureSelector furnitureSelector;
     private bool isPlacementMode = false; // 배치모드 여부
+    private enum MODE { PLACE_MODE, MOVE_MODE , NONE};
+    private MODE currentMode = MODE.NONE;
     private bool canPlace = true;   // 설치 가능 여부
 
     void Start()
@@ -46,7 +50,7 @@ public class FurniturePlacer : MonoBehaviour
         HandleInput();
 
         // 배치 모드일때만 고스트 업데이트
-        if (isPlacementMode)
+        if (currentMode == MODE.PLACE_MODE)
         {
             UpdateGhostPosition();
         }
@@ -60,34 +64,40 @@ public class FurniturePlacer : MonoBehaviour
             SelectFurnitureForPlacement(newIndex);
         }
 
-        // 마우스 좌클릭
-        if (Input.GetMouseButtonDown(0))
+        if(currentMode == MODE.PLACE_MODE)
         {
-            if (isPlacementMode)
+            if (Input.GetMouseButtonDown(0))
             {
                 PlaceFurniture();
             }
-            else
-            {
-                furnitureSelector.TrySelectFurniture();
-            }
-        }
-
-        // ESC - 모드 취소
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (isPlacementMode)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 ExitPlacementMode();
             }
-            else
-            {
-                furnitureSelector.DeselectCurrentFurniture();
-            }
+
+            return;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            furnitureSelector.TrySelectFurniture();
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            furnitureSelector.UpdateDrag();
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            furnitureSelector.EndDrag();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            furnitureSelector.DeselectCurrentFurniture();
         }
 
         // 가구 회전
-        if(isPlacementMode && ghostFuniture != null)
+        if(currentMode == MODE.PLACE_MODE && ghostFuniture != null)
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -117,12 +127,13 @@ public class FurniturePlacer : MonoBehaviour
     void SelectFurnitureForPlacement(int index)
     {
         // 이전과 같은 가구면 무시
-        if(isPlacementMode && selectedFurnitureIndex == index)
+        if(currentMode == MODE.PLACE_MODE && selectedFurnitureIndex == index)
             return;
 
         // 배치모드
         selectedFurnitureIndex = index;
         isPlacementMode = true;
+        currentMode = MODE.PLACE_MODE;
 
         // 선택모드 해제
         furnitureSelector.DeselectCurrentFurniture();
@@ -243,6 +254,7 @@ public class FurniturePlacer : MonoBehaviour
     void ExitPlacementMode()
     {
         isPlacementMode = false;
+        currentMode = MODE.NONE;
         selectedFurnitureIndex = -1;
 
         // 고스트 제거
