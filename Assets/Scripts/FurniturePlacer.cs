@@ -172,7 +172,7 @@ public class FurniturePlacer : MonoBehaviour
     void CreateGhostFurniture()
     {
         // 기존 고스트 제거
-        if (ghostFurniture)
+        if (ghostFurniture != null)
         {
             Destroy(ghostFurniture);
         }
@@ -194,7 +194,7 @@ public class FurniturePlacer : MonoBehaviour
         }
 
         Furniture furniture = ghostFurniture.GetComponent<Furniture>();
-        if (furniture)
+        if (furniture != null)
         {
             Destroy(furniture);
         }

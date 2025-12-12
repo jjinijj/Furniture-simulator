@@ -17,7 +17,7 @@ public class Furniture : MonoBehaviour
     void Start()
     {
         furnitureRenderer = GetComponentInChildren<MeshRenderer>();
-        if (furnitureRenderer)
+        if (furnitureRenderer != null)
         {
             furnitureMaterials = furnitureRenderer.materials;
 

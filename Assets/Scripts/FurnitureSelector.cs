@@ -35,8 +35,8 @@ public class FurnitureSelector : MonoBehaviour
         {
             Furniture furniture = hit.collider.GetComponent<Furniture>();
 
-            if(furniture)   SelectFurniture(furniture);
-            else            DeselectCurrentFurniture(); 
+            if(furniture != null)   SelectFurniture(furniture);
+            else                    DeselectCurrentFurniture(); 
         }
     }
 
@@ -71,8 +71,10 @@ public class FurnitureSelector : MonoBehaviour
 
     void SelectFurniture(Furniture furniture)
     {
-        if(selectedFurniture) 
+        if(selectedFurniture != null)
+        {
             selectedFurniture.Deselect();
+        } 
 
         selectedFurniture = furniture;
         selectedFurniture.Select();
@@ -81,8 +83,10 @@ public class FurnitureSelector : MonoBehaviour
 
     public void DeselectCurrentFurniture()
     {
-        if(selectedFurniture)   
+        if(selectedFurniture != null)
+        {
             selectedFurniture.Deselect();
+        }
         selectedFurniture = null;
         
         UpdateUI();
@@ -90,7 +94,7 @@ public class FurnitureSelector : MonoBehaviour
 
     public void TryDeleteSelected()
     {
-        if (selectedFurniture)
+        if (selectedFurniture != null)
         {
             Debug.Log($"Deleting {selectedFurniture.gameObject.name}");
             selectedFurniture.Delete();
@@ -101,7 +105,7 @@ public class FurnitureSelector : MonoBehaviour
 
     public void RotateSelected(float angle)
     {
-        if (selectedFurniture)
+        if (selectedFurniture != null)
         {
             selectedFurniture.Rotate(angle);
         }
@@ -111,7 +115,7 @@ public class FurnitureSelector : MonoBehaviour
     {
         if (selectionInfoText != null)
         {
-            if (selectedFurniture)
+            if (selectedFurniture != null)
             {
                 selectionInfoText.text = $"Selected: {selectedFurniture.gameObject.name}";
             }
