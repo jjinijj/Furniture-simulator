@@ -99,6 +99,14 @@ public class FurnitureSelector : MonoBehaviour
         }
     }
 
+    public void RotateSelected(float angle)
+    {
+        if (selectedFurniture)
+        {
+            selectedFurniture.Rotate(angle);
+        }
+    }
+
     void UpdateUI()
     {
         if (selectionInfoText != null)

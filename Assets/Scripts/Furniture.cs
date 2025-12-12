@@ -104,6 +104,11 @@ public class Furniture : MonoBehaviour
         UpdateVisual();
     }
 
+    public void Rotate(float angle)
+    {
+        transform.Rotate(0f, angle, 0f);
+    }
+
     public void Delete()
     {
         Debug.Log($"{gameObject.name} deleted");

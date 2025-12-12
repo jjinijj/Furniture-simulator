@@ -59,21 +59,12 @@ public class FurniturePlacer : MonoBehaviour
             SelectFurnitureForPlacement(newIndex);
         }
 
+        HandleRotationInput();
+
         // 설치모드 : 가구 설치, 가구 회전, 설치모드 취소
         if(currentMode == MODE.PLACE_MODE)
         {
-            // 가구 회전
-            if(ghostFurniture != null)
-            {
-                if (Input.GetKeyDown(KeyCode.Q))
-                {
-                    ghostFurniture.transform.Rotate(0, -90, 0);
-                }
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    ghostFurniture.transform.Rotate(0, 90, 0);
-                }
-            }
+            
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -118,6 +109,18 @@ public class FurniturePlacer : MonoBehaviour
         }        
     }
 
+    void HandleRotationInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            HandleRotate(-90f);
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            HandleRotate(90f);
+        }
+    }
+
     int GetNumberKeyInput()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) return 0;
@@ -130,6 +133,18 @@ public class FurniturePlacer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha8)) return 7;
         
         return -1;
+    }
+    
+    void HandleRotate(float angle)
+    {
+        if(currentMode == MODE.PLACE_MODE && ghostFurniture)
+        {
+            ghostFurniture.transform.Rotate(0f, angle, 0f);
+        }
+        else if(currentMode == MODE.NONE)
+        {
+            furnitureSelector.RotateSelected(angle);
+        }
     }
 
     void SelectFurnitureForPlacement(int index)
