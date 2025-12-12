@@ -29,7 +29,7 @@ public class FurniturePlacer : MonoBehaviour
 
         if(furnitureSelector == null)
         {
-            Debug.LogError("FunitureSelector is Null");
+            Debug.LogError("FurnitureSelector is Null");
         }
 
         if (selectedMark)
@@ -52,26 +52,19 @@ public class FurniturePlacer : MonoBehaviour
 
     void HandleInput()
     {
+        // 키버튼으로 설치할 가구 선택
         int newIndex = GetNumberKeyInput();
         if(newIndex != -1 && newIndex < furniturePrefabs.Length)
         {
             SelectFurnitureForPlacement(newIndex);
         }
 
+        HandleRotationInput();
+
+        // 설치모드 : 가구 설치, 가구 회전, 설치모드 취소
         if(currentMode == MODE.PLACE_MODE)
         {
-            // 가구 회전
-            if(currentMode == MODE.PLACE_MODE && ghostFurniture != null)
-            {
-                if (Input.GetKeyDown(KeyCode.Q))
-                {
-                    ghostFurniture.transform.Rotate(0, -90, 0);
-                }
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    ghostFurniture.transform.Rotate(0, 90, 0);
-                }
-            }
+            
 
             if (Input.GetMouseButtonDown(0))
             {
@@ -85,25 +78,47 @@ public class FurniturePlacer : MonoBehaviour
             return;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if(currentMode == MODE.NONE)
         {
-            furnitureSelector.TrySelectFurniture();
-        }
+            // 설치된 가구 선택
+            if (Input.GetMouseButtonDown(0))
+            {
+                furnitureSelector.TrySelectFurniture();
+            }
 
-        if (Input.GetMouseButton(0))
-        {
-            furnitureSelector.UpdateDrag();
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            furnitureSelector.EndDrag();
-        }
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            furnitureSelector.DeselectCurrentFurniture();
-        }
+            // 설치된 가구 드래그 이동
+            if (Input.GetMouseButton(0))
+            {
+                furnitureSelector.UpdateDrag();
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                furnitureSelector.EndDrag();
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                furnitureSelector.DeselectCurrentFurniture();
+            }
 
-        
+            // 설치된 가구 삭제
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                furnitureSelector.TryDeleteSelected();   
+            }
+
+        }        
+    }
+
+    void HandleRotationInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            HandleRotate(-90f);
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            HandleRotate(90f);
+        }
     }
 
     int GetNumberKeyInput()
@@ -118,6 +133,18 @@ public class FurniturePlacer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha8)) return 7;
         
         return -1;
+    }
+    
+    void HandleRotate(float angle)
+    {
+        if(currentMode == MODE.PLACE_MODE && ghostFurniture)
+        {
+            ghostFurniture.transform.Rotate(0f, angle, 0f);
+        }
+        else if(currentMode == MODE.NONE)
+        {
+            furnitureSelector.RotateSelected(angle);
+        }
     }
 
     void SelectFurnitureForPlacement(int index)
@@ -145,7 +172,7 @@ public class FurniturePlacer : MonoBehaviour
     void CreateGhostFurniture()
     {
         // 기존 고스트 제거
-        if (ghostFurniture)
+        if (ghostFurniture != null)
         {
             Destroy(ghostFurniture);
         }
@@ -167,7 +194,7 @@ public class FurniturePlacer : MonoBehaviour
         }
 
         Furniture furniture = ghostFurniture.GetComponent<Furniture>();
-        if (furniture)
+        if (furniture != null)
         {
             Destroy(furniture);
         }
