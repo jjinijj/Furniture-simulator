@@ -65,7 +65,6 @@ public class FurnitureSelector : MonoBehaviour
         if(selectedFurniture != null && isDragging)
         {
             selectedFurniture.StopDrag();
-            DeselectCurrentFurniture();
             isDragging = false;
         }
     }
@@ -84,9 +83,20 @@ public class FurnitureSelector : MonoBehaviour
     {
         if(selectedFurniture)   
             selectedFurniture.Deselect();
-        
         selectedFurniture = null;
+        
         UpdateUI();
+    }
+
+    public void TryDeleteSelected()
+    {
+        if (selectedFurniture)
+        {
+            Debug.Log($"Deleting {selectedFurniture.gameObject.name}");
+            selectedFurniture.Delete();
+            selectedFurniture = null;
+            UpdateUI();
+        }
     }
 
     void UpdateUI()

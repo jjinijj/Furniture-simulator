@@ -95,7 +95,6 @@ public class Furniture : MonoBehaviour
     public void StopDrag()
     {
         isDragging = false;
-        isSelected = false;
         Debug.Log($"{gameObject.name} 드래그 완료");
 
         Vector3 newPosition = transform.position;
@@ -103,6 +102,12 @@ public class Furniture : MonoBehaviour
         
         transform.position = newPosition;
         UpdateVisual();
+    }
+
+    public void Delete()
+    {
+        Debug.Log($"{gameObject.name} deleted");
+        Destroy(gameObject);
     }
 
     void OnDestroy()

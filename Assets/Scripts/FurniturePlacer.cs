@@ -29,7 +29,7 @@ public class FurniturePlacer : MonoBehaviour
 
         if(furnitureSelector == null)
         {
-            Debug.LogError("FunitureSelector is Null");
+            Debug.LogError("FurnitureSelector is Null");
         }
 
         if (selectedMark)
@@ -52,16 +52,18 @@ public class FurniturePlacer : MonoBehaviour
 
     void HandleInput()
     {
+        // 키버튼으로 설치할 가구 선택
         int newIndex = GetNumberKeyInput();
         if(newIndex != -1 && newIndex < furniturePrefabs.Length)
         {
             SelectFurnitureForPlacement(newIndex);
         }
 
+        // 설치모드 : 가구 설치, 가구 회전, 설치모드 취소
         if(currentMode == MODE.PLACE_MODE)
         {
             // 가구 회전
-            if(currentMode == MODE.PLACE_MODE && ghostFurniture != null)
+            if(ghostFurniture != null)
             {
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
@@ -85,25 +87,35 @@ public class FurniturePlacer : MonoBehaviour
             return;
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if(currentMode == MODE.NONE)
         {
-            furnitureSelector.TrySelectFurniture();
-        }
+            // 설치된 가구 선택
+            if (Input.GetMouseButtonDown(0))
+            {
+                furnitureSelector.TrySelectFurniture();
+            }
 
-        if (Input.GetMouseButton(0))
-        {
-            furnitureSelector.UpdateDrag();
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            furnitureSelector.EndDrag();
-        }
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            furnitureSelector.DeselectCurrentFurniture();
-        }
+            // 설치된 가구 드래그 이동
+            if (Input.GetMouseButton(0))
+            {
+                furnitureSelector.UpdateDrag();
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                furnitureSelector.EndDrag();
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                furnitureSelector.DeselectCurrentFurniture();
+            }
 
-        
+            // 설치된 가구 삭제
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                furnitureSelector.TryDeleteSelected();   
+            }
+
+        }        
     }
 
     int GetNumberKeyInput()
