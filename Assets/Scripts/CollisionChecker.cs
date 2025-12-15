@@ -31,7 +31,6 @@ public static class CollisionChecker
         if (target == null)
             return false;
         
-        Debug.Log($"{target.name}, {layerMask.value}");
         // 크기 계산
         Bounds bounds = GetFurnitureBounds(target.transform);
 
@@ -49,7 +48,6 @@ public static class CollisionChecker
         {
             if (!hit.transform.IsChildOf(target.transform))
             {
-                Debug.Log(hit.gameObject.name);
                 return true;
             }
         }

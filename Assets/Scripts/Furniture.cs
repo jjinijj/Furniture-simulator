@@ -141,6 +141,7 @@ public class Furniture : MonoBehaviour
     public void Rotate(float angle)
     {
         transform.Rotate(0f, angle, 0f);
+        originRotation = transform.rotation;
     }
 
     public void Delete()
