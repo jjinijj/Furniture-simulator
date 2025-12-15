@@ -12,7 +12,11 @@ public class Furniture : MonoBehaviour
     private float heightOffset = 0.5f;
     private Renderer furnitureRenderer;
     private Material[] furnitureMaterials;
+    private LayerMask layerMask;
     private Color[] originalcolors;
+
+    private Vector3 originPosition;
+    private Quaternion originRotation;
 
     void Start()
     {
@@ -31,6 +35,8 @@ public class Furniture : MonoBehaviour
             {
                 Debug.LogError($"{gameObject.name} has not Material.");
             }
+
+            SetLayerRecursively(gameObject, LayerMask.NameToLayer("Furniture"));
         }
         else
         {
@@ -38,10 +44,21 @@ public class Furniture : MonoBehaviour
         }
     }
 
+    void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, layer);
+        }
+    }
+
     public void Select()
     {
         isSelected = true;
         UpdateVisual();
+        originPosition = transform.position;
+        originRotation = transform.rotation;
         Debug.Log($"The {gameObject.name} is selected");
     }
 
@@ -49,6 +66,8 @@ public class Furniture : MonoBehaviour
     {
         isSelected = false;
         UpdateVisual();
+        transform.position = originPosition;
+        transform.rotation = originRotation;
         Debug.Log($"The {gameObject.name} is deselected");
     }
 
@@ -84,7 +103,7 @@ public class Furniture : MonoBehaviour
     public void MoveTo(Vector3 floorPosition)
     {
         if (!isDragging) return;
-        Debug.Log($"드래그 업데이트 {floorPosition}");
+        //Debug.Log($"드래그 업데이트 {floorPosition}");
         Vector3 newPosition = floorPosition;
         newPosition.y += heightOffset;
         
@@ -97,10 +116,25 @@ public class Furniture : MonoBehaviour
         isDragging = false;
         Debug.Log($"{gameObject.name} 드래그 완료");
 
-        Vector3 newPosition = transform.position;
-        newPosition.y -= heightOffset;
+        bool isOverlapping = CollisionChecker.IsOverlapping(gameObject, 1 << gameObject.layer);
+        Debug.Log(isOverlapping);
+        if (isOverlapping)
+        {
+            transform.position = originPosition;
+            transform.rotation = originRotation;
+        }
+        else
+        {
+            Vector3 newPosition = transform.position;
+            newPosition.y -= heightOffset;
+            transform.position = newPosition;
+
+            originPosition = transform.position;
+            originRotation = transform.rotation;
+        }
         
-        transform.position = newPosition;
+        
+        
         UpdateVisual();
     }
 
