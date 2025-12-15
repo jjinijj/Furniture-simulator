@@ -17,6 +17,7 @@ public class FurniturePlacer : MonoBehaviour
     private int selectedFurnitureIndex = -1; // 현재 선택된 가구 인덱스
     private Camera mainCamera;
     private GameObject ghostFurniture;
+    private MaterialPropertyBlock ghostMBP;
     private FurnitureSelector furnitureSelector;
     private enum MODE { PLACE_MODE, MOVE_MODE , NONE};
     private MODE currentMode = MODE.NONE;
@@ -184,19 +185,28 @@ public class FurniturePlacer : MonoBehaviour
             Quaternion.identity
         );
 
-        ghostFurniture.name = "Ghost_" + furniturePrefabs[selectedFurnitureIndex].name;
-
-        // 충돌 방지
-        Collider[] colliders = ghostFurniture.GetComponentsInChildren<Collider>();
-        foreach(Collider col in colliders)
+        if(ghostMBP == null)
         {
-            col.enabled = false;
+            ghostMBP = new MaterialPropertyBlock();
         }
+
+        ghostFurniture.name = "Ghost_" + furniturePrefabs[selectedFurnitureIndex].name;
+        SetLayerRecursively(ghostFurniture, LayerMask.NameToLayer("Ghost"));
 
         Furniture furniture = ghostFurniture.GetComponent<Furniture>();
         if (furniture != null)
         {
             Destroy(furniture);
+        }
+    }
+
+    // 재귀 레이어 설정
+    void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, layer);
         }
     }
 
@@ -219,34 +229,17 @@ public class FurniturePlacer : MonoBehaviour
         }
 
         // 충돌 감지
-        canPlace = !IsOverlapping();
+        canPlace = !CollisionChecker.IsOverlapping(ghostFurniture, furnitureLayer);
         Color guideColor = canPlace ? Color.green : Color.red;
 
         Renderer[] renderers = ghostFurniture.GetComponentsInChildren<Renderer>();
-        foreach (Renderer rend in renderers)
-        {
-            Material[] materials = rend.materials;
-            foreach (Material mat in materials)
-            {
-                mat.color = guideColor;
-            }
-        }
-    }
 
-    bool IsOverlapping()
-    {
-        if (ghostFurniture == null)
-            return false;
-        
-        // Overlap 체크
-        Collider[] colliders = Physics.OverlapBox(
-            ghostFurniture.transform.position,
-            Vector3.one * 0.5f,
-            ghostFurniture.transform.rotation,
-            furnitureLayer  // ← 가구만 감지!
-        );
-    
-        return colliders.Length > 0;
+        foreach(Renderer render in renderers)
+        {
+            render.GetPropertyBlock(ghostMBP);
+            ghostMBP.SetColor("_BaseColor", guideColor);
+            render.SetPropertyBlock(ghostMBP);
+        }
     }
 
     void PlaceFurniture()
@@ -289,6 +282,7 @@ public class FurniturePlacer : MonoBehaviour
         {
             Destroy(ghostFurniture);
             ghostFurniture = null;
+            
         }
 
         // UI 초기화
