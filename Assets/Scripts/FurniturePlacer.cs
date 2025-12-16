@@ -269,6 +269,15 @@ public class FurniturePlacer : MonoBehaviour
             furniture.AddComponent<Furniture>();
         }
 
+        if(WebCommunication.Instance != null)
+        {
+            WebCommunication.Instance.NotifyFurniturePlaced(
+                furniturePrefabs[selectedFurnitureIndex].name,
+                furniture.transform.position,
+                furniture.transform.rotation
+            );
+        }
+
         Debug.Log($"가구 배치: {furniture.name} at {position}");
     }
 
