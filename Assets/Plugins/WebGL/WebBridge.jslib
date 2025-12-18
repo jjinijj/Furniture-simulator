@@ -15,17 +15,14 @@ mergeInto(LibraryManager.library, {
      * @param {string} message - 전송할 메시지
      */
     SendMessageToJS: function(message) {
-        // C 문자열을 JavaScript 문자열로 변환
         var msg = UTF8ToString(message);
         
         console.log('[Unity → JS] Message:', msg);
         
-        // 커스텀 이벤트 발생
         window.dispatchEvent(new CustomEvent('UnityMessage', {
             detail: { message: msg }
         }));
         
-        // 또는 직접 함수 호출 (HTML에 정의된 함수)
         if (typeof window.onUnityMessage === 'function') {
             window.onUnityMessage(msg);
         }
@@ -37,7 +34,7 @@ mergeInto(LibraryManager.library, {
      * @param {float} x - X 좌표
      * @param {float} y - Y 좌표
      * @param {float} z - Z 좌표
-     * @param {float} rotationY - 회전 Y 각도
+     * @param {float} rotationY - Y축 회전값
      */
     SendFurniturePlaced: function(furnitureName, x, y, z, rotationY) {
         var name = UTF8ToString(furnitureName);
@@ -45,32 +42,62 @@ mergeInto(LibraryManager.library, {
         var data = {
             type: 'furniturePlaced',
             furniture: name,
-            position: { x: x, y: y, z: z }
+            position: { x: x, y: y, z: z },
             rotation: rotationY,
             timestamp: Date.now()
         };
         
         console.log('[Unity → JS] Furniture Placed:', data);
         
-        // 커스텀 이벤트 발생
         window.dispatchEvent(new CustomEvent('FurniturePlaced', {
             detail: data
         }));
         
-        // 또는 직접 함수 호출
         if (typeof window.onFurniturePlaced === 'function') {
             window.onFurniturePlaced(data);
         }
+    },
+
+    /**
+     * Unity에서 JavaScript로 JSON 데이터 전송 (새로 추가!)
+     * @param {string} json - JSON 문자열
+     */
+    SendJSONToJS: function(json) {
+        var jsonString = UTF8ToString(json);
+        
+        try {
+            // JSON 파싱
+            var data = JSON.parse(jsonString);
+            
+            console.log('[Unity → JS] JSON Data:', data);
+            
+            // 타입별 처리
+            if (data.type === 'furnitureList') {
+                console.log('📦 Furniture List:');
+                console.log('  - Count:', data.furnitureCount);
+                console.log('  - Total Cost:', data.totalCost.toLocaleString(), '원');
+                console.log('  - Furniture:', data.furniture);
+                
+                // 각 가구 정보 출력
+                data.furniture.forEach(function(item, index) {
+                    console.log(`  [${index}] ${item.name}: (${item.position.x.toFixed(1)}, ${item.position.y.toFixed(1)}, ${item.position.z.toFixed(1)}) ${item.rotation}° - ${item.price.toLocaleString()}원`);
+                });
+            }
+            
+            // 커스텀 이벤트 발생
+            window.dispatchEvent(new CustomEvent('UnityJSON', {
+                detail: data
+            }));
+            
+            // 콜백 함수 호출
+            if (typeof window.onUnityJSON === 'function') {
+                window.onUnityJSON(data);
+            }
+            
+        } catch (e) {
+            console.error('[Unity → JS] JSON Parse Error:', e);
+            console.error('Raw JSON:', jsonString);
+        }
     }
 
-    // ============================================
-    // 필요한 경우 추가 함수들
-    // ============================================
-    
-    // 예: 브라우저 정보 가져오기
-    // GetBrowserInfo: function() {
-    //     var info = navigator.userAgent;
-    //     var bufferSize = lengthBytesUTF8(info) + 1;
-    //     var buffer = _malloc(bufferSize);
-    //     stringToUTF8(info, buffer, bufferSize);
-    //     return buffer;
+});
