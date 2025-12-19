@@ -220,8 +220,8 @@ transform.LookAt(target);
 private static extern void SendJSONToJS(string json);
 
 public void SendAllFurnitureData() {
-    FurnitureListData data = CollectFurnitureData();
-    string json = JsonUtility.ToJson(data, true);
+    
+    string json = JsonUtility.ToJson(listData, true);
     SendJSONToJS(json);
 }
 ```
@@ -347,7 +347,7 @@ Other Settings:
 **3. Build:**
 ```
 Build 버튼 클릭
-저장 위치: WebGL-Build/
+저장 위치: WebGL_Build/
 대기 시간: 5-15분
 ```
 
@@ -371,7 +371,7 @@ python3 -m http.server 8000
 **브라우저에서:**
 ```
 http://localhost:8000
-http://localhost:8000/test.html (테스트 페이지)
+http://localhost:8000/Test.html (테스트 페이지)
 ```
 
 ---
@@ -382,10 +382,10 @@ http://localhost:8000/test.html (테스트 페이지)
 
 | 키 | 기능 |
 |----|------|
-| **1-5** | 가구 선택 (Sofa, Table, Chair, Bed, Bookshelf) |
+| **1-8** | 가구 선택 (Bed, Bookcase, Cabinet, Chair, Coffee Table, DiningChair, Dining Table, Sofa) |
 | **Q** | 선택된 가구 왼쪽 회전 (-90°) |
 | **E** | 선택된 가구 오른쪽 회전 (+90°) |
-| **Delete / D** | 선택된 가구 삭제 |
+| **D** | 선택된 가구 삭제 |
 | **J** | JSON 데이터 전송 (테스트) |
 | **Space** | 테스트 메시지 전송 |
 | **T** | 가구 배치 알림 전송 |
@@ -437,22 +437,20 @@ Total: ~6MB (70% 감소)
 
 **배치 시스템:**
 ```
-✅ 가구 5종 모두 배치 가능
+✅ 가구 8종 모두 배치 가능
 ✅ 고스트 미리보기 작동
-✅ 바닥 외 영역 클릭 시 무시
 ```
 
 **선택 & 이동:**
 ```
-✅ 가구 클릭 시 노란색 하이라이트
+✅ 가구 클릭 시 하이라이트
 ✅ 드래그로 자유 이동
-✅ 빈 공간 클릭 시 선택 해제
+✅ ESC 누를 시 선택 해제
 ```
 
 **회전:**
 ```
 ✅ Q/E 키로 90도 회전
-✅ 회전 후 충돌 감지
 ✅ 여러 번 회전 가능
 ```
 
@@ -460,12 +458,11 @@ Total: ~6MB (70% 감소)
 ```
 ✅ 가구끼리 겹칠 때 빨간색
 ✅ 배치 가능할 때 초록색
-✅ 회전 시에도 정확한 감지
 ```
 
 **삭제:**
 ```
-✅ Delete/D 키로 삭제
+✅ D 키로 삭제
 ✅ Material 메모리 정리
 ✅ 선택 상태 해제
 ```
@@ -590,10 +587,8 @@ MIT License
 
 ---
 
-## 🙏 감사의 글
-
 - **Unity Technologies**: Unity 엔진 제공
-- **Asset Store Creators**: Low Poly 가구 에셋
+- **Asset Store Creators**: Ultimate Interior Furniture Pack (Low Poly)
 - **Anthropic (Claude)**: 개발 멘토링 및 기술 자문
 
 ---
@@ -602,13 +597,7 @@ MIT License
 
 프로젝트에 대한 질문이나 제안사항이 있으시면:
 - GitHub Issues: [여기](https://github.com/jjinijj/FurnitureSimulator/issues)
-- Email: your.email@example.com
-
----
-
-**⭐ 이 프로젝트가 도움이 되셨다면 Star를 눌러주세요!**
-
-**🔗 [Live Demo](https://furniture-simulator.vercel.app)** (배포 후 링크 추가)
+- Email: jjinstalk@gmail.com
 
 ---
 
