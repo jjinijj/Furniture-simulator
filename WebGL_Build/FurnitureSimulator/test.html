@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Furniture Simulator - WebGL Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+
+        /* Unity Game */
+        .game-container {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #unity-canvas {
+            width: 100%;
+            height: 600px;
+            display: block;
+        }
+
+        #unity-loading-bar {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+        }
+
+        #unity-progress-bar-empty {
+            width: 100%;
+            height: 18px;
+            background: #333;
+            border-radius: 9px;
+        }
+
+        #unity-progress-bar-full {
+            width: 0%;
+            height: 18px;
+            background: #4CAF50;
+            border-radius: 9px;
+            transition: width 0.3s;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .panel {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .panel h2 {
+            margin-bottom: 15px;
+            color: #4CAF50;
+            font-size: 18px;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            background: #4CAF50;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.secondary {
+            background: #2196F3;
+        }
+
+        button.secondary:hover {
+            background: #0b7dda;
+        }
+
+        /* Furniture List */
+        .furniture-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .furniture-item {
+            background: #333;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .furniture-item h3 {
+            color: #4CAF50;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .furniture-item p {
+            font-size: 13px;
+            color: #aaa;
+            margin: 3px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 40px 20px;
+        }
+
+        .total-cost {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        /* Logs */
+        .log-container {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-time {
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .log-unity {
+            color: #4CAF50;
+        }
+
+        .log-js {
+            color: #2196F3;
+        }
+
+        .log-error {
+            color: #f44336;
+        }
+
+        /* Status */
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #333;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .status-dot.connected {
+            background: #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🪑 Furniture Simulator - WebGL Test</h1>
+
+        <div class="layout">
+            <!-- Unity Game -->
+            <div class="game-container">
+                <canvas id="unity-canvas"></canvas>
+                <div id="unity-loading-bar">
+                    <div id="unity-progress-bar-empty">
+                        <div id="unity-progress-bar-full"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <!-- Status -->
+                <div class="panel">
+                    <h2>📡 연결 상태</h2>
+                    <div class="status">
+                        <div class="status-dot" id="status-dot"></div>
+                        <span id="status-text">연결 대기 중...</span>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="panel">
+                    <h2>🎮 Unity 제어</h2>
+                    <div class="button-group">
+                        <button onclick="requestAllFurniture()">
+                            📦 모든 가구 정보 요청
+                        </button>
+                        <button onclick="sendTestMessage()" class="secondary">
+                            💬 테스트 메시지 전송
+                        </button>
+                        <button onclick="clearLogs()" class="secondary">
+                            🗑️ 로그 초기화
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Furniture List -->
+                <div class="panel">
+                    <h2>🪑 배치된 가구</h2>
+                    <div id="furniture-list" class="furniture-list">
+                        <div class="empty-state">
+                            아직 가구가 없습니다.<br>
+                            Unity에서 가구를 배치하거나<br>
+                            위 버튼을 눌러 정보를 요청하세요.
+                        </div>
+                    </div>
+                    <div id="total-cost" class="total-cost" style="display: none;">
+                        총 비용: 0원
+                    </div>
+                </div>
+
+                <!-- Logs -->
+                <div class="panel">
+                    <h2>📋 통신 로그</h2>
+                    <div id="log-container" class="log-container">
+                        <div class="log-entry">
+                            <span class="log-time">00:00:00</span>
+                            <span class="log-js">시스템 시작</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let unityInstance = null;
+
+        // Unity 빌드 설정
+        const buildUrl = "Build";
+        const loaderUrl = buildUrl + "/FurnitureSimulator.loader.js";
+        const config = {
+            dataUrl: buildUrl + "/FurnitureSimulator.data.unityweb",
+            frameworkUrl: buildUrl + "/FurnitureSimulator.framework.js.unityweb",
+            codeUrl: buildUrl + "/FurnitureSimulator.wasm.unityweb",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "DefaultCompany",
+            productName: "FurnitureSimulator",
+            productVersion: "1.0",
+        };
+
+        // 로딩 바
+        const canvas = document.querySelector("#unity-canvas");
+        const loadingBar = document.querySelector("#unity-loading-bar");
+        const progressBarFull = document.querySelector("#unity-progress-bar-full");
+
+        // Unity 로드
+        const script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            createUnityInstance(canvas, config, (progress) => {
+                progressBarFull.style.width = 100 * progress + "%";
+            }).then((instance) => {
+                unityInstance = instance;
+                loadingBar.style.display = "none";
+                updateStatus(true);
+                addLog("Unity 인스턴스 로드 완료", "js");
+            }).catch((message) => {
+                alert("Unity 로드 실패: " + message);
+                addLog("Unity 로드 실패: " + message, "error");
+            });
+        };
+        document.body.appendChild(script);
+
+        // 상태 업데이트
+        function updateStatus(connected) {
+            const dot = document.getElementById('status-dot');
+            const text = document.getElementById('status-text');
+            
+            if (connected) {
+                dot.classList.add('connected');
+                text.textContent = '✅ Unity 연결됨';
+            } else {
+                dot.classList.remove('connected');
+                text.textContent = '❌ 연결 끊김';
+            }
+        }
+
+        // 로그 추가
+        function addLog(message, type = 'js') {
+            const container = document.getElementById('log-container');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            
+            const time = new Date().toLocaleTimeString();
+            const className = type === 'unity' ? 'log-unity' : 
+                            type === 'error' ? 'log-error' : 'log-js';
+            
+            entry.innerHTML = `
+                <span class="log-time">${time}</span>
+                <span class="${className}">${message}</span>
+            `;
+            
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 로그 초기화
+        function clearLogs() {
+            document.getElementById('log-container').innerHTML = '';
+            addLog('로그 초기화됨', 'js');
+        }
+
+        // JavaScript → Unity: 모든 가구 정보 요청
+        function requestAllFurniture() {
+            if (!unityInstance) {
+                alert('Unity가 아직 로드되지 않았습니다.');
+                return;
+            }
+
+            addLog('JS → Unity: 가구 정보 요청', 'js');
+            unityInstance.SendMessage(
+                'WebCommunication',
+                'RequestAllFurnitureData',
+                ''
+            );
+        }
+
+        // JavaScript → Unity: 테스트 메시지
+        function sendTestMessage() {
+            if (!unityInstance) {
+                alert('Unity가 아직 로드되지 않았습니다.');
+                return;
+            }
+
+            const message = 'Hello from JavaScript! ' + new Date().toLocaleTimeString();
+            addLog('JS → Unity: ' + message, 'js');
+            
+            // Unity의 WebCommunication 오브젝트에 메시지 전송
+            // (테스트용 - WebCommunication.cs에 ReceiveMessage 메서드 필요)
+            console.log('테스트 메시지 전송:', message);
+        }
+
+        // Unity → JavaScript: JSON 데이터 수신
+        window.addEventListener('UnityJSON', function(event) {
+            const data = event.detail;
+            addLog('Unity → JS: JSON 데이터 수신', 'unity');
+            console.log('받은 데이터:', data);
+            
+            displayFurnitureList(data);
+        });
+
+        // Unity → JavaScript: 가구 배치 알림
+        window.addEventListener('FurniturePlaced', function(event) {
+            const data = event.detail;
+            addLog('Unity → JS: 가구 배치 - ' + data.name, 'unity');
+            console.log('가구 배치:', data);
+        });
+
+        // Unity → JavaScript: 일반 메시지
+        window.addEventListener('UnityMessage', function(event) {
+            const data = event.detail;
+            addLog('Unity → JS: ' + data.message, 'unity');
+        });
+
+        // 가구 목록 표시
+        function displayFurnitureList(data) {
+            const container = document.getElementById('furniture-list');
+            const totalCostDiv = document.getElementById('total-cost');
+            
+            if (!data || !data.furniture || data.furniture.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        아직 가구가 없습니다.
+                    </div>
+                `;
+                totalCostDiv.style.display = 'none';
+                return;
+            }
+
+            // 가구 목록 생성
+            let html = '';
+            data.furniture.forEach((item, index) => {
+                html += `
+                    <div class="furniture-item">
+                        <h3>${index + 1}. ${item.name}</h3>
+                        <p>📍 위치: (${item.position.x.toFixed(1)}, ${item.position.z.toFixed(1)})</p>
+                        <p>🔄 회전: ${item.rotation.toFixed(0)}°</p>
+                        <p>💰 가격: ${item.price.toLocaleString()}원</p>
+                        <p>🏷️ 카테고리: ${item.category}</p>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+
+            // 총 비용 표시
+            totalCostDiv.style.display = 'block';
+            totalCostDiv.textContent = `총 비용: ${data.totalCost.toLocaleString()}원`;
+
+            addLog(`가구 ${data.furniture.length}개 표시 완료`, 'js');
+        }
+
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+R: 가구 정보 요청
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                requestAllFurniture();
+            }
+            // Ctrl+L: 로그 초기화
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                clearLogs();
+            }
+        });
+
+        // 초기 로그
+        addLog('페이지 로드 완료', 'js');
+        addLog('Unity 로딩 중...', 'js');
+    </script>
+</body>
+</html>
