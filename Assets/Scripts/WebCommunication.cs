@@ -38,7 +38,7 @@ public class WebCommunication : MonoBehaviour
     private static extern void SendMessageToJS(string message);
 
     [DllImport("__Internal")]
-    private static exten void SendFuniturePlaced(string furnitureName, float x, float y, float z);
+    private static extern void SendFurniturePlaced(string furnitureName, float x, float y, float z, float rotateY);
 
     [DllImport("__Internal")]
     private static extern void SendJSONToJS(string json);
@@ -67,7 +67,7 @@ public class WebCommunication : MonoBehaviour
         float rotationY = rotation.eulerAngles.y;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
-        SendFuniturePlaced(
+        SendFurniturePlaced(
             furnitureName, 
             position.x, position.y, position.z,
             rotationY);
@@ -84,7 +84,7 @@ public class WebCommunication : MonoBehaviour
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         SendJSONToJS(json);
-        Debug.long($"[Unity -> JS] JSON Data : {json}");
+        Debug.Log($"[Unity -> JS] JSON Data : {json}");
 #else
         Debug.Log($"Unity -> JS(Editor) JSON Data : {json}");
 #endif
