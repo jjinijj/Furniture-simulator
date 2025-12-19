@@ -53,14 +53,14 @@ public class PositionData
 public class FurnitureListData
 {
     public string type = "furnitureList";
-    public List<FurnitureData> dataList;
+    public List<FurnitureData> furniture;
     public int totalCost;
     public int furnitureCount;
     public long timestamp;
 
     public FurnitureListData()
     {
-        dataList = new List<FurnitureData>();
+        furniture = new List<FurnitureData>();
         totalCost = 0;
         furnitureCount = 0;
         timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -68,8 +68,8 @@ public class FurnitureListData
 
     public void AddFurniture(FurnitureData data)
     {
-        dataList.Add(data);
+        furniture.Add(data);
         totalCost += data.price;
-        furnitureCount = dataList.Count;
+        furnitureCount = furniture.Count;
     }
 }
