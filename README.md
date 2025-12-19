@@ -596,7 +596,7 @@ MIT License
 ## 📞 문의
 
 프로젝트에 대한 질문이나 제안사항이 있으시면:
-- GitHub Issues: [여기](https://github.com/jjinijj/FurnitureSimulator/issues)
+- GitHub Issues: https://github.com/jjinijj/Furniture-simulator/issues
 - Email: jjinstalk@gmail.com
 
 ---
