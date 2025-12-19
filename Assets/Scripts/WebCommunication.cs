@@ -38,7 +38,7 @@ public class WebCommunication : MonoBehaviour
     private static extern void SendMessageToJS(string message);
 
     [DllImport("__Internal")]
-    private static exten void SendFuniturePlaced(string furnitureName, float x, float y, float z);
+    private static extern void SendFuniturePlaced(string furnitureName, float x, float y, float z);
 
     [DllImport("__Internal")]
     private static extern void SendJSONToJS(string json);
