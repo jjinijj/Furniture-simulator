@@ -1,13 +1,14 @@
 import React from 'react';
 import './App.css';
 import Button from './components/Button';
-import FurnitureCard from './components/FurnitureCard';
 import Counter from './components/Counter';
 import FurnitureCounter from './components/FurnitureCounter';
+import FurnitureList from './components/FurnitureList';
+import ConditionalExample from './components/ConditionalExample';
+import TernaryExample from './components/TernaryExample';
+import AndExample from './components/AndExample';
 
 function App() {
-  const projectName = "Furniture Simulator";
-  const emoji ="🪑"
 
   const handleAddClick = () =>{
     alert('가구 추가!');
@@ -44,6 +45,14 @@ function App() {
 
         <h2>3. useState 심화</h2>
         <FurnitureCounter/>
+
+        <h2>4. 리스트 랜더링</h2>
+        <FurnitureList/>
+
+        <h2>5. 조건부 랜더링</h2>
+        <ConditionalExample/>
+        <TernaryExample/>
+        <AndExample/>
     </div>
 
   );
