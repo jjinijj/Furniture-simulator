@@ -7,6 +7,7 @@ import FurnitureList from './components/FurnitureList';
 import ConditionalExample from './components/ConditionalExample';
 import TernaryExample from './components/TernaryExample';
 import AndExample from './components/AndExample';
+import StockExample from './components/StockExample';
 
 function App() {
 
@@ -53,6 +54,7 @@ function App() {
         <ConditionalExample/>
         <TernaryExample/>
         <AndExample/>
+        <StockExample/>
     </div>
 
   );
