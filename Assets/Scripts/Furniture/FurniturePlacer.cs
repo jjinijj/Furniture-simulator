@@ -279,6 +279,8 @@ public class FurniturePlacer : MonoBehaviour
         }
 
         Debug.Log($"가구 배치: {furniture.name} at {position}");
+
+
     }
 
     void ExitPlacementMode()
