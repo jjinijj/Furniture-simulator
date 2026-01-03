@@ -2,18 +2,18 @@
 
 **프로젝트:** Unity + React 가구 배치 시뮬레이터  
 **기간:** 2025년 12월 - 2026년 3월  
-**마지막 업데이트:** 2025년 12월 29일
+**마지막 업데이트:** 2025년 1월 3일
 
 ---
 
 ## 🚀 현재 진행 중
 
-### Week 6 Day 1 (다음! 12/30 화요일)
-- [ ] Unity 프로젝트 상태 확인
-- [ ] WebGL 빌드 최종 확인
-- [ ] React 프로젝트 준비
-- [ ] react-unity-webgl 라이브러리 조사
-- [ ] 통합 전략 수립
+### Week 6 Day 3-4 (다음! 1/4-5)
+- [ ] Unity → React 통신 구현
+- [ ] React → Unity 통신 구현
+- [ ] addEventListener 사용
+- [ ] sendMessage 사용
+- [ ] 양방향 통신 테스트
 
 ---
 
@@ -56,7 +56,7 @@
 - [x] 가구 가격/카테고리 데이터 추가
 - [x] JSON 직렬화 성공
 - [x] WebBridge.jslib JSON 파싱 추가
-- [x] Editor 테스트 (J 키)
+- [x] Editor 테스ト (J 키)
 
 ### Week 3 Day 3-4 ⏭️
 - [x] 스킵 (React UI로 대체 예정)
@@ -166,64 +166,91 @@
 - [x] 필터링 + 검색 시스템
 - [x] **Week 5 완료!** 🎊
 
+### Month 2 Week 6 Day 1 (12/31 수) 🎉
+- [x] Unity 프로젝트 상태 확인
+  - [x] 프로젝트 열기
+  - [x] 가구 배치/이동/회전/삭제 테스트
+  - [x] 스크립트 확인
+- [x] WebGL 빌드 최종 확인
+  - [x] Build 폴더 확인
+  - [x] Python 로컬 서버 실행
+  - [x] 브라우저 테스트 (localhost:8000)
+  - [x] 양방향 통신 테스트 (Space, T, J 키)
+- [x] react-unity-webgl 라이브러리 조사
+  - [x] 공식 문서 읽기
+  - [x] useUnityContext Hook 이해
+  - [x] Unity 컴포넌트 사용법 파악
+  - [x] 통신 방법 (sendMessage, addEventListener) 이해
+- [x] React 프로젝트 확인
+  - [x] furniture-app 실행
+  - [x] Todo 앱 정상 작동 확인
+- [x] **Week 6 Day 1 완료!** ✨
+
+### Month 2 Week 6 Day 2 (1/3 토) 🎉
+- [x] react-unity-webgl 설치
+  - [x] npm install react-unity-webgl
+- [x] Unity 빌드 파일을 React 프로젝트로 복사
+  - [x] WebGL_Build/FurnitureSimulator/Build/
+  - [x] → furniture-app/public/unity-build/Build/
+- [x] UnityPlayer 컴포넌트 생성
+  - [x] src/components/UnityPlayer.tsx 작성
+  - [x] useUnityContext Hook 사용
+  - [x] 로딩 상태 처리 (isLoaded, loadingProgression)
+  - [x] 로딩 바 UI 구현
+  - [x] Unity 컴포넌트 렌더링
+- [x] App.tsx 수정
+  - [x] UnityPlayer import
+  - [x] 기본 레이아웃
+- [x] 기본 렌더링 테스트
+  - [x] React에서 Unity 실행 확인
+  - [x] 가구 배치 작동 확인
+  - [x] 오타 수정 (framwork → framework)
+- [x] **Unity + React 통합 성공!** 🔥🎊
+
 ---
 
 ## 📋 예정 작업
 
 ### Week 6: Unity-React 통합
 
-#### Day 1 (12/30 화) ⏳
-- [ ] Unity 프로젝트 열기 및 상태 확인
-- [ ] WebGL 빌드 최종 테스트
-- [ ] React 프로젝트 준비 (furniture-app)
-- [ ] react-unity-webgl 라이브러리 조사
-  - [ ] 공식 문서 읽기
-  - [ ] 사용 예시 확인
-  - [ ] 설치 방법 파악
-- [ ] 통합 전략 수립
-
-#### Day 2-3 (수-목)
-- [ ] react-unity-webgl 설치
-  ```bash
-  npm install react-unity-webgl
-  ```
-- [ ] Unity 빌드 파일을 React 프로젝트에 복사
-  ```
-  public/unity-build/
-  └── Build/
-      ├── build.data
-      ├── build.framework.js
-      ├── build.loader.js
-      └── build.wasm
-  ```
-- [ ] UnityPlayer 컴포넌트 작성
-- [ ] useUnityContext Hook 사용
-- [ ] 기본 렌더링 테스트
-- [ ] 로딩 상태 처리
-
-#### Day 4-5 (금-토)
+#### Day 3-4 (1/4-5) ⏳
 - [ ] Unity → React 통신 구현
-  - [ ] addEventListener 사용
-  - [ ] 가구 배치 이벤트 수신
+  - [ ] Unity에서 이벤트 발생
+  - [ ] React에서 addEventListener로 수신
+  - [ ] 가구 배치 이벤트 처리
   - [ ] JSON 데이터 파싱
 - [ ] React → Unity 통신 구현
-  - [ ] sendMessage 사용
-  - [ ] 가구 선택 명령 전송
+  - [ ] React 버튼 만들기
+  - [ ] sendMessage로 Unity에 명령 전송
   - [ ] Unity에서 명령 처리
+  - [ ] 가구 선택/배치 제어
 - [ ] 양방향 통신 디버깅 및 테스트
+  - [ ] Console 로그 확인
+  - [ ] 데이터 흐름 검증
 
-#### Day 6-7 (토-일)
+#### Day 5-6 (1/6-7)
 - [ ] 간단한 가구 선택 UI (React)
-- [ ] 버튼 클릭 → Unity에 전달
-- [ ] Unity에서 가구 배치
-- [ ] 배치 완료 → React에 알림
+  - [ ] 가구 버튼 목록
+  - [ ] 선택 상태 표시
+- [ ] React-Unity 인터랙션
+  - [ ] 버튼 클릭 → Unity 가구 선택
+  - [ ] Unity 배치 → React 상태 업데이트
+- [ ] 배치된 가구 목록 표시
+  - [ ] 가구 이름, 위치 정보
+  - [ ] 삭제 버튼
 - [ ] 상태 동기화 확인
 - [ ] 통합 테스트
 
+#### Day 7 (주말)
+- [ ] 전체 통합 테스트
+- [ ] 버그 수정
+- [ ] UI/UX 개선
+- [ ] 코드 정리
+
 **Week 6 예상 결과물:**
-- Unity + React 통합 프로젝트 ✅
+- Unity + React 완전 통합 ✅
 - 양방향 통신 구조 ✅
-- 기본 인터랙션 ✅
+- 기본 UI 인터랙션 ✅
 
 ---
 
@@ -258,69 +285,6 @@
 
 ---
 
-### Week 8: 배포 + 마무리
-
-#### Day 1-3
-- [ ] 추가 기능 (선택)
-  - [ ] 평면도 미니맵
-  - [ ] 측정 도구
-  - [ ] 가구 검색
-  - [ ] 배치 애니메이션
-
-#### Day 4-7
-- [ ] 프로젝트 최적화
-  - [ ] Unity WebGL 빌드 최적화
-  - [ ] React 번들 크기 최적화
-  - [ ] 로딩 속도 개선
-- [ ] Vercel 배포
-  - [ ] 계정 생성
-  - [ ] 프로젝트 연결
-  - [ ] 배포 설정
-  - [ ] 도메인 연결 (선택)
-- [ ] README 완성
-  - [ ] 프로젝트 설명
-  - [ ] 기능 목록
-  - [ ] 기술 스택
-  - [ ] 스크린샷/GIF
-  - [ ] 데모 링크
-- [ ] 데모 영상 촬영
-  - [ ] 화면 녹화
-  - [ ] 3-5분 시연
-  - [ ] 편집 (선택)
-- [ ] GitHub 정리
-  - [ ] 코드 정리
-  - [ ] 주석 추가
-  - [ ] 문서 업데이트
-
-**Week 8 예상 결과물:**
-- 배포된 웹사이트 ✅
-- 완성된 포트폴리오 프로젝트 ✅
-- **프로젝트 1 완성!** 🎉
-
----
-
-## 🔧 개선 사항 (나중에)
-
-### 고급 기능 (Month 3 추가 가능)
-- [ ] 실시간 가격 계산 애니메이션
-- [ ] Undo/Redo 기능 (명령 패턴)
-- [ ] 가구 복사 기능
-- [ ] 스냅 그리드 (격자에 맞춤)
-- [ ] 가구 그룹화
-- [ ] 평면도 2D 미니맵
-- [ ] 다양한 방 크기 선택
-- [ ] 벽/바닥 색상 변경
-- [ ] 조명 제어
-
-### UI/UX
-- [ ] 다크모드/라이트모드
-- [ ] 다국어 지원
-- [ ] 튜토리얼 모드
-- [ ] 단축키 가이드
-- [ ] 모바일 최적화
-
----
-
 ## 🐛 버그 & 이슈
 
 ### 알려진 문제
@@ -333,6 +297,8 @@
 - [x] 드래그 중 충돌 감지 → StopDrag에서 처리
 - [x] 코드 중복 → CollisionChecker 유틸리티로 해결
 - [x] Todo 앱 수정 모드 버튼 충돌 → 레이아웃 변경으로 해결
+- [x] Unity WebGL CORS 에러 → Python 로컬 서버로 해결
+- [x] React에서 Unity 파일 로드 실패 → 오타 수정 (framwork → framework)
 
 ---
 
@@ -381,34 +347,52 @@
 - TypeScript 타입 정의
 - 타입 파일 분리 (.ts)
 
+### Week 6에서 배운 React-Unity 통합
+- **react-unity-webgl 라이브러리**
+  - useUnityContext Hook
+  - unityProvider, isLoaded, loadingProgression
+  - Unity 컴포넌트 사용
+- **Unity WebGL 빌드 관리**
+  - 빌드 파일 구조
+  - public 폴더에 배치
+  - 압축 설정 (Gzip → Disabled)
+- **로딩 상태 관리**
+  - 로딩 바 구현
+  - 조건부 렌더링으로 UX 개선
+- **파일 경로 설정**
+  - loaderUrl, dataUrl, frameworkUrl, codeUrl
+
 ### 마스터한 패턴
 - **React 불변성:** Spread 연산자 (...) 사용
 - **조건부 포커스:** useEffect + useRef
 - **필터링 + 검색:** 복합 조건
 - **레이아웃 변경:** UX 문제 해결
 - **Material 관리:** 메모리 누수 방지
+- **Unity-React 통합:** useUnityContext Hook 활용
 
 ### 참고 문서
 - [구면좌표계 가이드](/mnt/project/구면좌표계_수학_공식_가이드.md)
 - [Material 관리 가이드](/mnt/project/Unity_Material_메모리_관리_가이드.md)
 - [Git 브랜치 전략](/mnt/project/Git_브랜치_전략_가이드.md)
 - [Git 커밋 메시지](/mnt/project/Git_커밋_메시지_가이드.md)
-- [React 핵심개념 Q&A](/mnt/user-data/outputs/React_핵심개념_QnA.md) ← New!
+- [React 핵심개념 Q&A](React_핵심개념_QnA.md)
 - [Unity WebGL 문서](https://docs.unity3d.com/Manual/webgl-interactingwithbrowserscripting.html)
 - [JsonUtility 문서](https://docs.unity3d.com/ScriptReference/JsonUtility.html)
 - [React 공식 문서](https://react.dev)
+- [react-unity-webgl 문서](https://react-unity-webgl.dev/)
 
 ---
 
 ## 🎯 이번 주 목표
 
-**Week 6 (12/29 ~ 1/4):**
-- [ ] Day 1 (12/29 월): Unity-React 통합 준비 ⏳ **오늘!**
-- [ ] Day 2-3 (화-수): react-unity-webgl 설치 & 렌더링
-- [ ] Day 4-5 (목-금): 양방향 통신 구현
-- [ ] Day 6-7 (토-일): 기본 인터랙션 완성
+**Week 6 (12/31 ~ 1/7):**
+- [x] Day 1 (12/31 수): Unity-React 통합 준비 ✅
+- [x] Day 2 (1/3 토): react-unity-webgl 설치 & 렌더링 ✅
+- [ ] Day 3-4 (1/4-5): 양방향 통신 구현 ⏳ **다음!**
+- [ ] Day 5-6 (1/6-7): 기본 UI 추가
+- [ ] Day 7 (주말): 통합 테스트
 
-**목표:** Unity와 React가 서로 대화하게 만들기! 🚀
+**목표:** Unity와 React가 완벽하게 대화하게 만들기! 🚀
 
 ---
 
@@ -420,100 +404,59 @@
 ✅ Week 3: WebGL 통신 & 빌드 (3일) - 100%
 ⏭️ Week 4: 스킵 (시간 절약)
 ✅ Week 5: React 기초 (3일) - 100%
-⏳ Week 6: Unity-React 통합 (7일) - 0%
+🔥 Week 6: Unity-React 통합 (7일) - 29% (Day 2 완료)
+  ✅ Day 1: 준비 완료
+  ✅ Day 2: 통합 성공
+  ⏳ Day 3-4: 양방향 통신
+  □ Day 5-6: UI 추가
+  □ Day 7: 테스트
 □ Week 7: UI 구현 (7일) - 0%
 □ Week 8: 배포 (7일) - 0%
 
-완료: 17일 / 60일
-진행률: 28.3%
+완료: 19일 / 60일
+진행률: 31.7%
 시간 단축: 10일! 🔥
 상태: 빠른 진행 중 🚀
-현재 날짜: 2025년 12월 29일 (월)
-다음: 2025년 12월 30일 (화) - Week 6 시작!
+현재 날짜: 2025년 1월 3일 (토)
+다음: 2025년 1월 4일 (일) - Week 6 Day 3 시작!
 ```
 
 ---
 
 ## 🔄 최근 변경 사항
 
-### 2025-12-29 (Week 5 Day 3 완료) 🎉
+### 2025-01-03 (Week 6 Day 2 완료) 🎉
+- react-unity-webgl 설치 완료
+- Unity 빌드 파일 복사 성공
+  - public/unity-build/Build/ 구조 생성
+- UnityPlayer 컴포넌트 작성
+  - useUnityContext Hook 활용
+  - 로딩 상태 관리 (isLoaded, loadingProgression)
+  - 로딩 바 UI 구현
+  - Unity 컴포넌트 렌더링
+- App.tsx 수정 (UnityPlayer 통합)
+- 오타 수정 (framwork → framework)
+- **Unity가 React 안에서 실행 성공!** 🔥
+- 가구 배치/이동/회전/삭제 모두 작동
+- **Unity-React 통합 핵심 완료!**
+- **다음: 양방향 통신 구현**
+
+### 2025-12-31 (Week 6 Day 1 완료)
+- Unity 프로젝트 상태 확인
+- WebGL 빌드 확인
+- Python 로컬 서버 실행
+- 양방향 통신 테스트 (Space, T, J 키)
+- react-unity-webgl 문서 읽기
+- useUnityContext, sendMessage, addEventListener 이해
+- React 프로젝트 확인
+- **모든 준비 완료!**
+
+### 2025-12-29 (Week 5 Day 3 완료)
 - useRef Hook 심화 학습 완료
-  - DOM 참조 방법
-  - 자동 포커스 구현
-  - 텍스트 전체 선택
-  - 조건부 실행 패턴
-- Todo 앱 완전 고도화 완성!
-  - 필터링 시스템 (전체/진행중/완료)
-  - 검색 기능 (대소문자 무시)
-  - 필터 + 검색 조합
-  - 수정 기능 (Edit)
-    - 더블클릭 + 수정 버튼
-    - 자동 포커스 + 텍스트 선택
-    - Enter/Esc 단축키
-    - 포커스 잃으면 자동 저장
-  - UX 개선
-    - 버튼 충돌 문제 해결
-    - 레이아웃 변경 (세로 배치)
-    - 단축키 안내
-- React Hooks 완전 마스터!
-  - useState, useEffect, useRef
-- **Week 5 완료!** 🎊
-- **다음: Week 6 (Unity-React 통합)**
-
-### 2025-12-중순 (Week 5 Day 2 완료)
-- 리스트 렌더링 (map, key prop)
-- 조건부 렌더링 (if/else, 삼항, &&)
-- useEffect Hook 마스터
-  - 생명주기 (Mount/Update/Unmount)
-  - Cleanup 함수
-  - 의존성 배열
-- Input/Form 완전 정복
-- Todo 앱 기본 기능 완성
-  - CRUD (추가/읽기/수정/삭제)
-  - localStorage 자동 저장
-- 컴포넌트 분리 (TodoForm, TodoList, TodoItem, TodoStats)
-- 타입 파일 분리 (types.ts)
-- React_핵심개념_QnA.md 문서 생성
-
-### 2025-12-중순 (Week 5 Day 1 완료)
-- React TypeScript 프로젝트 생성 (furniture-app)
-- JSX 문법 학습 완료
-- 컴포넌트 3개 제작 (Button, Counter, FurnitureCounter)
-- Props와 State (useState) 개념 습득
-- CSS 스타일링 (인라인 + 클래스)
-- 이벤트 핸들링 (onClick)
-- TypeScript 타입 정의 학습
-- **React 기초 완성!**
-- **Month 2 Week 5 시작!**
-
-### 2025-12-19 (Week 3 Day 5-7 완료)
-- WebGL 빌드 완료 (Gzip 압축)
-- test.html 양방향 통신 구현
-- 브라우저 테스트 성공
-- 웹 압축 기초 가이드 작성 (13KB)
-- README.md 완성 (14KB, 609줄)
-- **Week 3 완료!**
-- **10일 단축 달성!**
-
-### 2025-12-18 (Week 3 Day 2 완료)
-- FurnitureData.cs 추가
-- JSON 데이터 구조 구현
-- SendAllFurnitureData() 메서드
-- 가구 가격/카테고리 시스템
-- WebBridge.jslib JSON 파싱
-- J 키 테스트 성공
-
-### 2025-12-16 (Week 3 Day 1 완료)
-- WebCommunication.cs, WebBridge.jslib 추가
-- Unity-JavaScript 양방향 통신 구조 완성
-- 위치 + 회전 정보 전송 구현
-- Editor 테스트 성공
-
-### 2025-12-15 (Week 2 완료)
-- CollisionChecker 유틸리티 클래스 추가
-- 코드 중복 완전 제거
-- 여러 Collider 지원 구현
-- Week 2 완료! 🎉
+- Todo 앱 완전 고도화 완성
+- 필터링 + 검색 + 수정 기능
+- UX 개선 (버튼 충돌 해결)
+- **Week 5 완료!**
 
 ---
 
@@ -536,52 +479,10 @@ React Todo 앱 단축키:
 - Enter: 수정 저장
 - Esc: 수정 취소
 - 더블클릭: 수정 모드
-```
 
----
-
-## 💡 다음 단계
-
-**Week 6 시작! Unity + React 통합!** 🎯
-
-**준비물 체크:**
-```
-□ Unity 프로젝트 (Furniture Simulator)
-  - 위치: 어디에 있나요?
-  - 상태: 마지막 작업 기억하시나요?
-  
-□ WebGL 빌드 파일
-  - Build/ 폴더 있나요?
-  - 최신 빌드인가요?
-  
-□ React 프로젝트 (furniture-app)
-  - 위치: 어디에 있나요?
-  - npm start 작동하나요?
-```
-
-**예상 난이도:**
-```
-⭐⭐⭐⭐ (새로운 영역!)
-
-하지만:
-✅ Unity 완성되어 있음
-✅ React 기초 탄탄함
-✅ WebGL 빌드 경험 있음
-✅ 통신 구조 이해함
-
-→ 충분히 할 수 있어요! 💪
-```
-
-**학습 자료:**
-```
-react-unity-webgl 공식:
-https://github.com/jeffreylanters/react-unity-webgl
-
-공식 문서:
-https://react-unity-webgl.dev/
-
-예제 코드:
-https://github.com/jeffreylanters/react-unity-webgl/tree/main/example
+React + Unity 앱:
+- 현재: Unity 조작 키 그대로 사용
+- 다음: React 버튼으로도 제어 가능하게 구현 예정
 ```
 
 ---
@@ -590,8 +491,8 @@ https://github.com/jeffreylanters/react-unity-webgl/tree/main/example
 
 ```
 전체 기간: 84일 (12주)
-완료: 17일
-진행률: 28.3%
+완료: 19일
+진행률: 31.7%
 
 시간 단축: 10일!
 - Week 1-3: 7일 단축
@@ -610,25 +511,27 @@ https://github.com/jeffreylanters/react-unity-webgl/tree/main/example
 ✅ TypeScript 기본 마스터
 ✅ localStorage 활용
 ✅ 컴포넌트 설계
-⏳ Unity-React 통합 준비 중
+✅ Unity-React 통합 성공! 🔥
+⏳ 양방향 통신 준비 중
 
 강점:
 ✅ 체계적인 학습
 ✅ 문제 해결 능력
 ✅ 빠른 학습 속도
 ✅ 꾸준함
+✅ 오타도 스스로 잡아냄!
 ```
 
 ---
 
-**다음 작업:** Week 6 Day 1 - Unity-React 통합 준비! 🎯
+**다음 작업:** Week 6 Day 3-4 - Unity ↔ React 양방향 통신! 🎯
 
 ---
 
-**마지막 업데이트:** 2025년 12월 29일 (월)  
-**버전:** 5.0  
-**Status:** Week 5 완료! 🎉  
-**Next:** Week 6 Day 1 (12/30 화) - Unity-React 통합 시작!
+**마지막 업데이트:** 2025년 1월 3일 (토)  
+**버전:** 6.0  
+**Status:** Week 6 Day 2 완료! 🎉  
+**Next:** Week 6 Day 3-4 (1/4-5) - 양방향 통신 구현!
 
-**내일부터 본격적인 통합 작업!** 🚀🔥  
-**화이팅!** 💪✨
+**Unity + React 통합 성공!** 🚀🔥  
+**다음은 서로 대화시키기!** 💬✨
