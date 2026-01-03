@@ -55,8 +55,8 @@ mergeInto(LibraryManager.library, {
         
         if (typeof window.onFurniturePlaced === 'function') {
             window.onFurniturePlaced(data);
-        }
-    },
+    }
+  },
 
     /**
      * Unity에서 JavaScript로 JSON 데이터 전송 (새로 추가!)
