@@ -18,6 +18,22 @@ public class Furniture : MonoBehaviour
     private Vector3 originPosition;
     private Quaternion originRotation;
 
+    [SerializeField]
+    private string furnitureId; // 고유 id
+    public string FurnitureId => furnitureId;
+    public void SetId(string id)
+    {
+        if(string.IsNullOrEmpty(furnitureId))
+        {
+            furnitureId = id;
+            Debug.Log($"Furniture ID set : {id}");
+        }
+        else
+        {
+            Debug.LogWarning("ID already set");
+        }
+    }
+
     void Start()
     {
         furnitureRenderer = GetComponentInChildren<MeshRenderer>();
