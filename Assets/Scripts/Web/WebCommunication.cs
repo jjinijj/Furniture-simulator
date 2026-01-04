@@ -38,7 +38,7 @@ public class WebCommunication : MonoBehaviour
     private static extern void SendMessageToJS(string message);
 
     [DllImport("__Internal")]
-    private static extern void SendFurniturePlaced(string furnitureName, float x, float y, float z, float rotateY);
+    private static extern void SendFurniturePlaced(string furnitureId, string furnitureName, float x, float y, float z, float rotateY);
 
     [DllImport("__Internal")]
     private static extern void SendJSONToJS(string json);
@@ -62,18 +62,22 @@ public class WebCommunication : MonoBehaviour
     /// 가구 배치 정보를 JavaScript로 전송
     /// </summary>
 
-    public void NotifyFurniturePlaced(string furnitureName, Vector3 position, Quaternion rotation)
+    public void NotifyFurniturePlaced(Furniture furniture)
     {
-        float rotationY = rotation.eulerAngles.y;
+        float rotationY = furniture.transform.rotation.eulerAngles.y;
+        Debug.Log(furniture.FurnitureId);
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         SendFurniturePlaced(
-            furnitureName, 
-            position.x, position.y, position.z,
+            furniture.FurnitureId,
+            furniture.name, 
+            furniture.transform.position.x, 
+            furniture.transform.position.y, 
+            furniture.transform.position.z,
             rotationY);
-        Debug.Log($"[Unity -> JS] Furniture Placed : {furnitureName} at {position}, rotation: {rotationY}");
+        Debug.Log($"[Unity -> JS] Furniture Placed : {furniture.name} at {furniture.transform.position}, rotation: {rotationY}");
 #else
-        Debug.Log($"[Unity -> JS (Editor)] Furniture Placed : {furnitureName} at {position}, rotation: {rotationY}");
+        Debug.Log($"[Unity -> JS (Editor)] Furniture Placed : {furniture.name} at {furniture.transform.position}, rotation: {rotationY}");
 #endif
     }
 
@@ -249,6 +253,26 @@ public class WebCommunication : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 가구 삭제 요청
+    /// </summary>
+    public void DeleteFurnitureFromJS(string furnitureId)
+    {
+        Debug.Log($"[JS -> Unity] Delete Furniture: {furnitureId}");
+
+        Furniture[] allFuniture = FindObjectsByType<Furniture>(FindObjectsSortMode.None);   
+        foreach(Furniture furniture in allFuniture)
+        {
+            if(furniture.FurnitureId == furnitureId)
+            {
+                Debug.Log($"[Unity] Furniture deleted : {furnitureId}");
+                furniture.Delete();
+                return;
+            }
+        }
+
+        Debug.LogWarning($"[Unity] Furniture not found: {furnitureId}");
+    }
     
 
     // ============================================
@@ -266,7 +290,7 @@ public class WebCommunication : MonoBehaviour
         // 테스트: T 키로 가구 배치 알림
         if (Input.GetKeyDown(KeyCode.T))
         {
-            NotifyFurniturePlaced("TestSofa", new Vector3(1, 0, 1), Quaternion.Euler(0, 45, 0));
+            //NotifyFurniturePlaced("TestSofa", new Vector3(1, 0, 1), Quaternion.Euler(0, 45, 0));
         }
 
         if (Input.GetKeyDown(KeyCode.J))

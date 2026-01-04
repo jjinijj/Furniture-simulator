@@ -264,17 +264,20 @@ public class FurniturePlacer : MonoBehaviour
             ghostFurniture.transform.rotation
         );
 
+        string furnitureId = System.DateTime.Now.Ticks.ToString();
+
         if(furniture.GetComponent<Furniture>() == null)
         {
             furniture.AddComponent<Furniture>();
         }
 
+        Furniture furnitureScript = furniture.GetComponent<Furniture>();
+        furnitureScript.SetId(furnitureId);
+
         if(WebCommunication.Instance != null)
         {
             WebCommunication.Instance.NotifyFurniturePlaced(
-                furniturePrefabs[selectedFurnitureIndex].name,
-                furniture.transform.position,
-                furniture.transform.rotation
+                furnitureScript
             );
         }
 

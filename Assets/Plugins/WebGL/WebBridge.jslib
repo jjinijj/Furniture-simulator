@@ -36,11 +36,13 @@ mergeInto(LibraryManager.library, {
      * @param {float} z - Z 좌표
      * @param {float} rotationY - Y축 회전값
      */
-    SendFurniturePlaced: function(furnitureName, x, y, z, rotationY) {
+    SendFurniturePlaced: function(id, furnitureName, x, y, z, rotationY) {
         var name = UTF8ToString(furnitureName);
+        var funitureId = UTF8ToString(id);
         
         var data = {
             type: 'furniturePlaced',
+            furnitureId: funitureId,
             furniture: name,
             position: { x: x, y: y, z: z },
             rotation: rotationY,

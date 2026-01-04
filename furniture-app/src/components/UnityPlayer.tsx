@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import {Unity, useUnityContext} from 'react-unity-webgl';
 
 interface FurnitureItem{
+    furnitureId: string,
     furniture: string;
     position: {x : number, y: number, z: number};
     rotation: number;
@@ -42,7 +43,6 @@ const UnityPlayer = () => {
             console.log('React -> Unity : 가구 선택 요청', furnitureIndex);
             sendMessage('WebCommunication', 'SelectFurnitureFromJS', furnitureIndex.toString());
         }
-
     };
     
     const handleFurniturePlaced = useCallback((event:any) => {
@@ -54,7 +54,19 @@ const UnityPlayer = () => {
             // 배치된 가구 목록에 추가
             setPlacedFurniture(prev => [...prev, data]);
 
-        },[])
+    },[])
+
+    const handleDeleteFurniture = (furnitureId : string, index: number) => {
+        if(isLoaded){
+            console.log('React -> Unity: 가구 삭제 요청', furnitureId);
+
+            sendMessage('WebCommunication', 'DeleteFurnitureFromJS', furnitureId.toString());
+
+            setPlacedFurniture(prev => prev.filter((furniture, i) => furnitureId !== furniture.furnitureId));
+
+            setLastMessage(`가구 삭제됨 : ${furnitureId}`);
+        }
+    };
 
     //  Unity -> React 통신
     useEffect(()=>{
@@ -233,6 +245,15 @@ const UnityPlayer = () => {
                         fontSize: '13px',
                     }}
                 >
+                    {/*가구 고유 아이디*/}
+                    <div style={{
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        color: '#61dafb',
+                        marginBottom: '6px',
+                    }}>
+                        {item.furnitureId}
+                    </div>
                     {/*가구 이름*/}
                     <div style={{
                         fontSize: '14px',
@@ -278,6 +299,7 @@ const UnityPlayer = () => {
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = '#ff4444';
                       }}
+                      onClick={()=>handleDeleteFurniture(item.furnitureId, index)}
                     >
                       🗑️ 삭제
                     </button>
