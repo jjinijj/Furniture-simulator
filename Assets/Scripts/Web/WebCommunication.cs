@@ -219,6 +219,38 @@ public class WebCommunication : MonoBehaviour
         SendAllFurnitureData();
     } 
 
+    //==================================================
+    // JavaScript -> Unity (JS -> C#)
+    //==================================================
+    /// <summary>
+    /// 가구 선택 요청
+    /// </summary>
+    public void SelectFurnitureFromJS(string furnitureindex)
+    {
+        Debug.Log($"[JS -> Unity] Select Furniture : {furnitureindex}");
+
+        int index;
+        if(int.TryParse(furnitureindex, out index))
+        {
+            FurniturePlacer placer = FindAnyObjectByType<FurniturePlacer>();
+            if(placer != null)
+            {
+                placer.SelectFurnitureForPlacement(index);
+                Debug.Log($"[Unity] Furiture {index}");
+            }
+            else
+            {
+                Debug.LogWarning($"[Unity] FurniturePlacer not found!");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[Unity] Invalid furnitureIndex : {furnitureindex}");
+        }
+    }
+
+    
+
     // ============================================
     // 테스트용 메서드
     // ============================================

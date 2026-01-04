@@ -148,7 +148,7 @@ public class FurniturePlacer : MonoBehaviour
         }
     }
 
-    void SelectFurnitureForPlacement(int index)
+    public void SelectFurnitureForPlacement(int index)
     {
         // 이전과 같은 가구면 무시
         if(currentMode == MODE.PLACE_MODE && selectedFurnitureIndex == index)

@@ -6,8 +6,8 @@ const UnityPlayer = () => {
         unityProvider,
         isLoaded, 
         loadingProgression, 
-        addEventListener: addUnityEventListener,
-        removeEventListener: removeUnityEventListener} = useUnityContext({
+        sendMessage,
+    } = useUnityContext({
         loaderUrl: '/unity-build/Build/FurnitureSimulator.loader.js',
         dataUrl: '/unity-build/Build/FurnitureSimulator.data',
         frameworkUrl: '/unity-build/Build/FurnitureSimulator.framework.js',
@@ -18,6 +18,26 @@ const UnityPlayer = () => {
     const [placedFurniture, setPlacedFurniture] = useState<string[]>([]);
     const [lastMessage, setLastMessage] = useState<string>('');
 
+    const furnitureList = [
+        {id:0, name: 'bed', displayName: '침대'},
+        {id:1, name: 'bookshelf', displayName: '책장'},
+        {id:2, name: 'cabinet', displayName: '수납장'},
+        {id:3, name: 'chair1', displayName: '의자1'},
+        {id:4, name: 'table1', displayName: '테이블1'},
+        {id:5, name: 'chair2', displayName: '의자2'},
+        {id:6, name: 'table2', displayName: '테이블2'},
+        {id:7, name: 'sofa', displayName: '소파'},
+    ];
+
+    const handleSelectFurniture = (furnitureIndex: number) => {
+        if(isLoaded)
+        {
+            console.log('React -> Unity : 가구 선택 요청', furnitureIndex);
+            sendMessage('WebCommunication', 'SelectFurnitureFromJS', furnitureIndex.toString());
+        }
+
+    };
+    
     const handleFurniturePlaced = useCallback((data:any) => {
             console.log('Unity에서 받은 데이터: ', data);
             const furnitureInfo = typeof data === 'string' ? data : JSON.stringify(data);
@@ -33,11 +53,9 @@ const UnityPlayer = () => {
 
         console.log('UseEffect');
 
-        
         // Unity에서 "FurniturePlaced" 이벤트 수신
-        //addUnityEventListener('FurniturePlaced', handleFurniturePlaced);
+        //addEventListener('FurniturePlaced', handleFurniturePlaced);
         window.addEventListener('FurniturePlaced', handleFurniturePlaced)
-
         console.log(handleFurniturePlaced.call);
         // cleanup
         return () => {
@@ -115,7 +133,54 @@ const UnityPlayer = () => {
         overflowY: 'auto',
       }}>
         <h2 style={{ marginTop: 0 }}>React UI</h2>
-        
+        {/* 가구 선택 버튼 */}
+        <div style={{
+            backgroundColor:'#2d2d2d',
+            padding: '15px',
+            borderRadius: '8px',
+            marginTop: '20px',
+        }}>
+            <h3 style={{
+                margin: '0 0 10px 0',
+                fontSize: '16px'
+            }}> 가구 선택 </h3>
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+            }}>
+                {furnitureList.map((furniture)=>(
+                    <button 
+                        key = {furniture.id}
+                        onClick={()=>{handleSelectFurniture(furniture.id)}}
+                        disabled = {!isLoaded}
+                        style={{
+                            padding: '10px',
+                            background: isLoaded ? '#61dafb': '#444' ,
+                            color: isLoaded ? '#000' :'#888',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: isLoaded ? 'pointer' : 'not-allowed',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                            if(isLoaded){
+                                e.currentTarget.style.backgroundColor = '#4fa8c5';
+                            }
+                        }}
+                        onMouseLeave={(e)=>{
+                            if(isLoaded){
+                                e.currentTarget.style.backgroundColor = '#61dafb';
+                            }
+                        }}
+                        >
+                            {furniture.displayName}
+                    </button>
+                ))}
+            </div>
+        </div>
         {/* 마지막 메시지 */}
         <div style={{
           backgroundColor: '#2d2d2d',
