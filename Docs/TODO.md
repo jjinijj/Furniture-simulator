@@ -2,20 +2,21 @@
 
 **프로젝트:** Unity + React 가구 배치 시뮬레이터  
 **기간:** 2025년 12월 - 2026년 3월  
-**마지막 업데이트:** 2025년 1월 3일
+**마지막 업데이트:** 2025년 1월 4일
 
 ---
 
 ## 🚀 현재 진행 중
 
-### Week 6 Day 4 (다음! 1/4 일)
-- [ ] React → Unity 통신 구현
-  - [ ] 가구 선택 버튼 UI 추가
-  - [ ] sendMessage로 Unity에 명령 전송
-  - [ ] Unity C# 스크립트에서 명령 받기
-  - [ ] 가구 선택/배치 제어
-- [ ] 양방향 통신 완전 테스트
-- [ ] 디버깅
+### Week 6 Day 6-7 (다음! 1/5-6)
+- [ ] 통계 패널 추가 (선택사항)
+  - [ ] 총 가구 개수
+  - [ ] 가구별 개수
+- [ ] UI 폴리싱
+  - [ ] 색상 최종 조정
+  - [ ] 간격 및 레이아웃 개선
+- [ ] 통합 테스트
+- [ ] 버그 수정
 
 ---
 
@@ -239,6 +240,60 @@
 
 **다음:**
 - React → Unity 통신 구현 (Day 4)
+
+### Month 2 Week 6 Day 4 (1/4 일) 🎉
+- [x] React → Unity 통신 구현
+  - [x] 가구 선택 버튼 UI 추가
+  - [x] sendMessage로 Unity에 명령 전송
+  - [x] WebCommunication.SelectFurnitureFromJS 작성
+  - [x] FurniturePlacer.SelectFurnitureFromIndex 작성
+- [x] 양방향 통신 완성
+  - [x] React 버튼 → Unity 가구 선택
+  - [x] Unity 배치 → React UI 업데이트
+  - [x] 완전한 양방향 통신 확인
+- [x] **React → Unity 통신 완료!** 🎉
+- [x] **Week 6 Day 3-4 완료!** 🎊
+
+**학습 내용:**
+- Unity의 SendMessage API는 내장되어 있음 (jslib 불필요)
+- React → Unity는 SendMessage 사용
+- Unity → React는 CustomEvent + jslib 필요
+- 비대칭적이지만 각각의 이유가 있음
+
+### Month 2 Week 6 Day 5 (1/4 일) 🎉
+- [x] 가구 정보 개선
+  - [x] FurnitureItem 타입 정의 (id, furniture, position, rotation, timestamp)
+  - [x] 위치 표시 (X, Y, Z)
+  - [x] 회전 표시 (각도)
+  - [x] 시간 정보 (toLocaleTimeString)
+- [x] 고유 ID 시스템 구현
+  - [x] Furniture.cs에 furnitureId 추가 ([SerializeField] private + getter)
+  - [x] SetId 메서드 구현
+  - [x] FurniturePlacer에서 타임스탬프 기반 ID 생성
+  - [x] WebCommunication에 ID 파라미터 추가
+  - [x] WebBridge.jslib 수정 (ID 포함)
+- [x] 삭제 기능 구현
+  - [x] React handleDeleteFurniture 함수
+  - [x] Unity DeleteFurnitureFromJS 함수
+  - [x] FindObjectsOfType로 ID 기반 검색 (임시 방법)
+  - [x] Unity에서 가구 삭제 (Destroy)
+  - [x] React 상태 업데이트 (filter)
+  - [x] 양방향 삭제 동기화 완료
+- [x] UI 레이아웃 개선
+  - [x] 오른쪽 패널 너비 조정 (1000px, minWidth, flexShrink: 0)
+  - [x] 배경색 통일 (body, 부모 div)
+  - [x] Flex 레이아웃 문제 해결
+- [x] **삭제 기능 완성!** 🔥
+- [x] **Week 6 Day 5 완료!** 🎊
+
+**학습 내용:**
+- C# 접근 제어자 ([SerializeField] private + public getter)
+- FindObjectsOfType는 임시 방법 (나중에 FurnitureManager로 리팩토링 예정)
+- Flex 레이아웃: flexShrink: 0으로 고정 크기 보장
+- width: 100%는 부모 크기, 하위 요소가 넘을 수 있음
+
+**다음:**
+- 통계 패널 추가 (선택사항)
 
 ---
 
@@ -550,8 +605,8 @@ React + Unity 앱:
 
 ```
 전체 기간: 84일 (12주)
-완료: 19일
-진행률: 31.7%
+완료: 21일
+진행률: 35.0%
 
 시간 단축: 10일!
 - Week 1-3: 7일 단축
@@ -571,26 +626,28 @@ React + Unity 앱:
 ✅ localStorage 활용
 ✅ 컴포넌트 설계
 ✅ Unity-React 통합 성공! 🔥
-⏳ 양방향 통신 준비 중
+✅ 양방향 통신 완성! 🎊
+✅ 고유 ID 시스템 구현
+✅ 삭제 기능 완성
+⏳ UI 폴리싱 준비 중
 
 강점:
 ✅ 체계적인 학습
 ✅ 문제 해결 능력
 ✅ 빠른 학습 속도
 ✅ 꾸준함
-✅ 오타도 스스로 잡아냄!
 ```
 
 ---
 
-**다음 작업:** Week 6 Day 3-4 - Unity ↔ React 양방향 통신! 🎯
+**다음 작업:** Week 6 Day 6-7 - 통계 패널 & UI 폴리싱! 🎯
 
 ---
 
-**마지막 업데이트:** 2025년 1월 3일 (토)  
-**버전:** 6.0  
-**Status:** Week 6 Day 2 완료! 🎉  
-**Next:** Week 6 Day 3-4 (1/4-5) - 양방향 통신 구현!
+**마지막 업데이트:** 2025년 1월 4일 (일)  
+**버전:** 6.5  
+**Status:** Week 6 Day 5 완료! 🎉  
+**Next:** Week 6 Day 6-7 (1/5-6) - 통계 패널 & UI 마무리!
 
-**Unity + React 통합 성공!** 🚀🔥  
+**양방향 통신 & 삭제 기능 완성!** 🚀🔥  
 **다음은 서로 대화시키기!** 💬✨
