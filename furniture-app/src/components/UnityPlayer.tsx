@@ -228,7 +228,7 @@ const UnityPlayer = () => {
                         }}
                         onMouseEnter={(e) => {
                             if(isLoaded){
-                                e.currentTarget.style.backgroundColor = theme.accent.dangerHover;
+                                e.currentTarget.style.backgroundColor = theme.accent.secondary;
                             }
                         }}
                         onMouseLeave={(e)=>{
