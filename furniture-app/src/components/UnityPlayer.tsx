@@ -9,6 +9,44 @@ interface FurnitureItem{
     timestamp: number;
 };
 
+// 색상 테마 정의
+const theme = {
+    background : {
+        main: '#282c34',
+        dark: '#1e1e1e',
+        surface: '#2d2d2d',
+        elevated: '#383838',
+    },
+    text: {
+        primary: '#ffffff',
+        secondary: '#cccccc',
+        tertiary: '#888888',
+    },
+    accent:{
+        primary: '#61dafb',
+        secondary: '#4fa8c5',
+        danger: '#e74c3c',
+        dangerHover: '#c0392b',
+    },
+        spacing: {
+        xs: '4px',
+        sm: '8px',
+        md: '12px',
+        lg: '16px',
+        xl: '20px',
+    },
+        fontSize: {
+        large: '18px',
+        medium: '14px',
+        small: '12px',
+    },
+        borderRadius: {
+        small: '4px',
+        medium: '6px',
+        large: '8px',
+    },
+};
+
 const UnityPlayer = () => {
     const{
         unityProvider,
@@ -90,7 +128,7 @@ const UnityPlayer = () => {
       height: '100vh',
       display: 'flex',
       flexDirection: 'row',
-      backgroundColor: '#282c34',
+      backgroundColor: theme.background.main,
     }}>
       {/* 왼쪽: Unity */}
       <div style={{
@@ -102,22 +140,22 @@ const UnityPlayer = () => {
       }}>
         {!isLoaded && (
           <div style={{
-            color: 'white',
+            color: theme.text.primary,
             fontSize: '24px',
-            marginBottom: '20px',
+            marginBottom: theme.spacing.xl,
           }}>
             <p>Loading... {Math.round(loadingProgression * 100)}%</p>
             <div style={{
               width: '300px',
               height: '30px',
-              backgroundColor: '#444',
+              backgroundColor: theme.background.surface,
               borderRadius: '15px',
               overflow: 'hidden',
             }}>
               <div style={{
                 width: `${loadingProgression * 100}%`,
                 height: '100%',
-                backgroundColor: '#61dafb',
+                backgroundColor: theme.accent.primary,
                 transition: 'width 0.3s'
               }} />
             </div>
@@ -137,7 +175,7 @@ const UnityPlayer = () => {
           <p style={{
             color: '#888',
             marginTop: '20px',
-            fontSize: '14px'
+            fontSize: theme.fontSize.medium
           }}>
             Unity 가구 배치 시뮬레이터 실행 중
           </p>
@@ -149,27 +187,28 @@ const UnityPlayer = () => {
         width: '300px',
         minWidth: '300px',
         flexShrink: 0,
-        backgroundColor: '#1e1e1e',
-        padding: '20px',
-        color: 'white',
+        backgroundColor: theme.background.dark,
+        padding: theme.spacing.xl,
+        color: theme.text.primary,
         overflowY: 'auto',
       }}>
         <h2 style={{ marginTop: 0 }}>React UI</h2>
         {/* 가구 선택 버튼 */}
         <div style={{
-            backgroundColor:'#2d2d2d',
-            padding: '15px',
-            borderRadius: '8px',
-            marginTop: '20px',
+            backgroundColor:theme.background.surface,
+            padding: theme.spacing.lg,
+            borderRadius: theme.borderRadius.large,
+            marginTop: theme.spacing.lg
         }}>
             <h3 style={{
                 margin: '0 0 10px 0',
-                fontSize: '16px'
+                marginBottom: theme.spacing.md,
+                fontSize: theme.fontSize.large,
             }}> 가구 선택 </h3>
             <div style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px',
+                gap: theme.spacing.sm,
             }}>
                 {furnitureList.map((furniture)=>(
                     <button 
@@ -177,24 +216,24 @@ const UnityPlayer = () => {
                         onClick={()=>{handleSelectFurniture(furniture.id)}}
                         disabled = {!isLoaded}
                         style={{
-                            padding: '10px',
-                            background: isLoaded ? '#61dafb': '#444' ,
-                            color: isLoaded ? '#000' :'#888',
+                            padding: `${theme.spacing.md} ${theme.spacing.lg}`,
+                            background: isLoaded ? theme.accent.primary: theme.background.elevated ,
+                            color: isLoaded ? '#000' :theme.text.tertiary,
                             border: 'none',
-                            borderRadius: '4px',
+                            borderRadius: theme.borderRadius.medium,
                             cursor: isLoaded ? 'pointer' : 'not-allowed',
-                            fontSize: '14px',
+                            fontSize: theme.fontSize.medium,
                             fontWeight: 'bold',
                             transition: 'all 0.2s',
                         }}
                         onMouseEnter={(e) => {
                             if(isLoaded){
-                                e.currentTarget.style.backgroundColor = '#4fa8c5';
+                                e.currentTarget.style.backgroundColor = theme.accent.dangerHover;
                             }
                         }}
                         onMouseLeave={(e)=>{
                             if(isLoaded){
-                                e.currentTarget.style.backgroundColor = '#61dafb';
+                                e.currentTarget.style.backgroundColor = theme.accent.primary;
                             }
                         }}
                         >
@@ -205,99 +244,126 @@ const UnityPlayer = () => {
         </div>
         {/* 마지막 메시지 */}
         <div style={{
-          backgroundColor: '#2d2d2d',
-          padding: '15px',
-          borderRadius: '8px',
-          marginBottom: '20px',
+          backgroundColor: theme.background.surface,
+          padding: theme.spacing.lg,
+          borderRadius: theme.borderRadius.large,
+          marginBottom: theme.spacing.lg,
         }}>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px' }}>
+          <h3 style={{
+            margin: 0,
+            marginTop: theme.spacing.md,
+            fontSize: theme.fontSize.large,
+             }}>
             마지막 이벤트
           </h3>
-          <p style={{ margin: 0, color: '#61dafb' }}>
+          <p style={{ 
+            margin: 0, 
+            color: theme.accent.primary,
+            fontSize: theme.fontSize.medium,
+           }}>
             {lastMessage || '대기 중...'}
           </p>
         </div>
 
         {/* 배치된 가구 목록 */}
         <div style={{
-          backgroundColor: '#2d2d2d',
-          padding: '15px',
-          borderRadius: '8px',
+          backgroundColor: theme.background.surface,
+          padding: theme.spacing.lg,
+          borderRadius: theme.borderRadius.large,
         }}>
-          <h3 style={{ margin: '0 0 10px 0', fontSize: '16px' }}>
+          <h3 style={{ 
+            margin: 0, 
+            marginBottom: theme.spacing.md,
+            fontSize: theme.fontSize.large
+            }}>
             배치된 가구 ({placedFurniture.length})
           </h3>
           {placedFurniture.length === 0 ? (
-            <p style={{ color: '#888', margin: 0 }}>없음</p>
+            <p style={{ 
+                color: theme.text.tertiary, 
+                margin: 0,
+                fontSize: theme.fontSize.medium, 
+            }}>없음</p>
           ) : (
             <ul style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px',
+              gap: theme.spacing.md,
             }}>
               {placedFurniture.map((item, index) => (
                 <div
                     key={index}
                     style={{
-                        padding: '12px',
-                        backgroundColor: '#383838',
-                        borderRadius: '6px',
-                        fontSize: '13px',
+                        padding: theme.spacing.md,
+                        backgroundColor: theme.background.elevated,
+                        borderRadius: theme.borderRadius.medium,
+                        fontSize: theme.fontSize.small,
                     }}
                 >
                     {/*가구 고유 아이디*/}
                     <div style={{
-                        fontSize: '14px',
+                        fontSize: theme.spacing.md,
                         fontWeight: 'bold',
-                        color: '#61dafb',
-                        marginBottom: '6px',
+                        color: theme.accent.primary,
+                        marginBottom: theme.spacing.sm,
                     }}>
                         {item.furnitureId}
                     </div>
                     {/*가구 이름*/}
                     <div style={{
-                        fontSize: '14px',
+                        fontSize: theme.spacing.md,
                         fontWeight: 'bold',
-                        color: '#61dafb',
-                        marginBottom: '6px',
+                        color: theme.accent.primary,
+                        marginBottom: theme.spacing.sm,
                     }}>
                         {item.furniture}
                     </div>
                     
                     {/*위치*/}
                     <div style={{
-                        color: '#ccc',
-                        marginBottom: '3px',
+                        color: theme.text.secondary,
+                        marginBottom: theme.spacing.xs,
+                        fontSize: theme.fontSize.small,
                     }}>
                         위치 : ({item.position.x.toFixed(1)}, {item.position.y.toFixed(1)}, {item.position.z.toFixed(1)});
                     </div>
 
                     {/* 회전 */}
-                    <div style={{ color: '#ccc', marginBottom: '3px' }}>
+                    <div style={{ 
+                        color: theme.text.secondary,
+                        marginBottom: theme.spacing.xs,
+                        fontSize: theme.fontSize.small
+                    }}>
                       회전: {item.rotation.toFixed(0)}°
                     </div>
 
                     {/* 시간 */}
-                    <div style={{ color: '#888', fontSize: '11px', marginBottom: '8px' }}>
+                    <div style={{ 
+                        color: theme.text.tertiary,
+                        fontSize: theme.fontSize.small,
+                        marginBottom: theme.spacing.md,
+                    }}>
                       {new Date(item.timestamp).toLocaleTimeString('ko-KR')}
                     </div>
                     {/* 삭제 버튼 */}
                     <button
                       style={{
                         width: '100%',
-                        padding: '6px',
-                        backgroundColor: '#ff4444',
-                        color: 'white',
+                        padding: theme.spacing.md,
+                        backgroundColor: theme.accent.danger,
+                        color: theme.text.primary,
                         border: 'none',
-                        borderRadius: '4px',
+                        borderRadius: theme.borderRadius.small,
                         cursor: 'pointer',
-                        fontSize: '12px',
+                        fontSize: theme.fontSize.medium,
+                        fontWeight: 'bold',
+                        transition: 'all 0.2s ease',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#cc0000';
+                        e.currentTarget.style.backgroundColor = theme.accent.dangerHover;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#ff4444';
+                        e.currentTarget.style.backgroundColor = theme.accent.dangerHover
                       }}
                       onClick={()=>handleDeleteFurniture(item.furnitureId, index)}
                     >
