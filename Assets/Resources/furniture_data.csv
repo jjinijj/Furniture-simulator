@@ -1,0 +1,9 @@
+prefabName,displayName,category,price
+Bed,침대,BedRoom,500000
+Bookcase,책장,Study,200000
+Cabinet,서랍,Living,300000
+Chair,의자,Study,80000
+CoffeeTable,커피 테이블,Living,150000
+DiningChair,식탁 의자,Living,100000
+DiningTable,식탁,Living,250000
+Sofa,소파,Living,400000
