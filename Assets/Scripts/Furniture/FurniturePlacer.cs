@@ -281,6 +281,7 @@ public class FurniturePlacer : MonoBehaviour
 
         Furniture furnitureScript = furniture.GetComponent<Furniture>();
         furnitureScript.SetId(furnitureId);
+        furnitureScript.SetData(data);
 
         if(WebCommunication.Instance != null)
         {

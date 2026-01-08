@@ -7,6 +7,8 @@ public class Furniture : MonoBehaviour
     public Color normalColor = Color.white;
     public Color selectedColor = Color.cyan;
 
+    private FurnitureItemData data;
+    public FurnitureItemData ItemData => data;
     private bool isSelected = false;
     private bool isDragging = false;
     private float heightOffset = 0.5f;
@@ -32,6 +34,11 @@ public class Furniture : MonoBehaviour
         {
             Debug.LogWarning("ID already set");
         }
+    }
+
+    public void SetData(FurnitureItemData furnitureItemdata)
+    {
+        data = furnitureItemdata;
     }
 
     void Start()

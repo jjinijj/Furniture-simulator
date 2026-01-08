@@ -38,7 +38,7 @@ public class WebCommunication : MonoBehaviour
     private static extern void SendMessageToJS(string message);
 
     [DllImport("__Internal")]
-    private static extern void SendFurniturePlaced(string furnitureId, string furnitureName, float x, float y, float z, float rotateY);
+    private static extern void SendFurniturePlaced(string furnitureId, string furnitureName, string price, float x, float y, float z, float rotateY);
 
     [DllImport("__Internal")]
     private static extern void SendJSONToJS(string json);
@@ -71,6 +71,7 @@ public class WebCommunication : MonoBehaviour
         SendFurniturePlaced(
             furniture.FurnitureId,
             furniture.name, 
+            furniture.price,
             furniture.transform.position.x, 
             furniture.transform.position.y, 
             furniture.transform.position.z,
@@ -115,8 +116,8 @@ public class WebCommunication : MonoBehaviour
                 cleanname,
                 furniture.transform.position,
                 furniture.transform.rotation.y,
-                GetFurniturePrice(cleanname),
-                GetFurnitureCategory(cleanname)
+                GetFurniturePrice(furniture.ItemData.displayName),
+                GetFurnitureCategory(furniture.ItemData.displayName)
             );
 
             listData.AddFurniture(data);
@@ -134,27 +135,14 @@ public class WebCommunication : MonoBehaviour
     /// </summary>
     private int GetFurniturePrice(string furnitureName)
     {
-        // TODO 임시데이터를 실제 데이터로 교체
-        Dictionary<string, int> prices = new Dictionary<string, int>
-        {
-            {"Sofa", 300000},
-            {"Table", 150000},
-            {"Chair", 80000},
-            {"Bed", 500000},
-            {"Bookshelf", 200000},
-            {"Desk", 180000},
-        };
 
-        foreach(var key in prices.Keys)
+        FurnitureItemData data = FurnitureDatabase.Instance.GetFurnitureData(furnitureName);
+        if(data != null)
         {
-            if (furnitureName.Contains(key))
-            {
-                return prices[key];
-            }
+            return data.price;
         }
 
-        // TODO 가격정보가 없을 때 얼마로 처리할지 결정
-        return 100000;
+        return 0;
     }
 
     /// <summary>
@@ -162,18 +150,10 @@ public class WebCommunication : MonoBehaviour
     /// </summary>
     private string GetFurnitureCategory(string furnitureName)
     {
-        //TODO 실제 데이터로 교체
-        if(furnitureName.Contains("Sofa") || furnitureName.Contains("Table"))
+        FurnitureItemData data = FurnitureDatabase.Instance.GetFurnitureData(furnitureName);
+        if(data != null)
         {
-            return "Living";
-        }
-        else if (furnitureName.Contains("Bed"))
-        {
-            return "Bedroom";
-        }
-        else if(furnitureName.Contains("Desk") || furnitureName.Contains("Bookshelf"))
-        {
-            return "Study";
+            return data.category;
         }
 
         return "etc";

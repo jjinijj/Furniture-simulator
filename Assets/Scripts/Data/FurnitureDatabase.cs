@@ -25,6 +25,20 @@ public class FurnitureDatabase : MonoBehaviour
         
         return null;
     }
+
+    public FurnitureItemData GetFurnitureData(string furnitureName)
+    {
+        foreach(FurnitureItemData data in furnitureList)
+        {
+            if(data.displayName == furnitureName)
+            {
+                return data;
+            }
+        }
+
+        Debug.LogWarning($"FurnitureItemData is null. furnitureName : {furnitureName}");
+        return null;
+    }
     
     void Awake()
     {
@@ -75,7 +89,7 @@ public class FurnitureDatabase : MonoBehaviour
             // 쉼표로 분리
             string[] values = line.Split(',');
             
-            if (values.Length < 3)
+            if (values.Length < 4)
             {
                 Debug.LogWarning($"[FurnitureDatabase] Invalid line {i}: {line}");
                 continue;
@@ -83,8 +97,9 @@ public class FurnitureDatabase : MonoBehaviour
             
             string prefabName = values[0].Trim();
             string displayName = values[1].Trim();
+            string category = values[2].Trim();
             
-            if (!int.TryParse(values[2].Trim(), out int price))
+            if (!int.TryParse(values[3].Trim(), out int price))
             {
                 Debug.LogWarning($"[FurnitureDatabase] Invalid price for {prefabName}: {values[2]}");
                 continue;
@@ -103,6 +118,7 @@ public class FurnitureDatabase : MonoBehaviour
                     prefab = prefab,
                     prefabName = prefabName,
                     displayName = displayName,
+                    category = category,
                     price = price
                 });
                 
