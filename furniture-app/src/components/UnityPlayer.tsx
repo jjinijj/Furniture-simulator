@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { setMaxIdleHTTPParsers } from "http";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {Unity, useUnityContext} from 'react-unity-webgl';
 
 interface FurnitureItem{
     furnitureId: string,
     furniture: string;
+    price: number;
     position: {x : number, y: number, z: number};
     rotation: number;
     timestamp: number;
@@ -63,6 +65,10 @@ const UnityPlayer = () => {
     // 개구 배치 정보 저장
     const [placedFurniture, setPlacedFurniture] = useState<FurnitureItem[]>([]);
     const [lastMessage, setLastMessage] = useState<string>('');
+
+    const totalCost = useMemo(()=>{
+      return placedFurniture.reduce((sum, item) => sum + item.price, 0);
+    }, [placedFurniture]);
 
     const furnitureList = [
         {id:0, name: 'bed', displayName: '침대'},
@@ -264,6 +270,37 @@ const UnityPlayer = () => {
             {lastMessage || '대기 중...'}
           </p>
         </div>
+        {/* 총 비용 패널 */}
+        <div style={{
+          backgroundColor: theme.background.surface,
+          padding: theme.spacing.lg,
+          borderRadius: theme.borderRadius.large,
+          marginBottom: theme.spacing.lg,
+          border: `2px solid ${theme.accent.primary}`,
+        }}>
+          <h3 style={{
+            margin: 0,
+            marginBottom: theme.spacing.md,
+            fontSize: theme.fontSize.large,
+            color: theme.text.primary,
+          }}>
+            💰 총 비용
+          </h3>
+          <div style={{
+            fontSize: '36px',
+            fontWeight: 'bold',
+            color: theme.accent.primary,
+          }}>
+            ₩{totalCost.toLocaleString()}
+          </div>
+          <div style={{
+            color: theme.text.tertiary,
+            fontSize: theme.fontSize.small,
+            marginTop: theme.spacing.sm,
+          }}>
+            {placedFurniture.length}개 가구
+          </div>
+        </div>
 
         {/* 배치된 가구 목록 */}
         <div style={{
@@ -317,6 +354,15 @@ const UnityPlayer = () => {
                         marginBottom: theme.spacing.sm,
                     }}>
                         {item.furniture}
+                    </div>
+                    {/* 가격 추가! */}
+                    <div style={{
+                      fontSize: theme.fontSize.medium,
+                      color: theme.text.primary,
+                      fontWeight: 'bold',
+                      marginBottom: theme.spacing.sm,
+                    }}>
+                      ₩{item.price.toLocaleString()}
                     </div>
                     
                     {/*위치*/}
