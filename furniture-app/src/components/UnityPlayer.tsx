@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {Unity, useUnityContext} from 'react-unity-webgl';
-import FurnitureCounter from "./FurnitureCounter";
 
 interface FurnitureItem{
     furnitureId: string,
+    typeId : string,
     furniture: string;
     price: number;
     position: {x : number, y: number, z: number};
@@ -151,6 +151,32 @@ const UnityPlayer = () => {
 
         // react 상태 업데이트
         setPlacedFurniture(layoutData.furnitureList);
+
+        // unity에 가구 배치
+        if(isLoaded){
+          layoutData.furnitureList.forEach((item:FurnitureItem)=>{
+
+            // unity FurnitureData구조로 변환
+            const unityData = {
+              id : item.furnitureId,
+              typeId: item.typeId,
+              name: item.furniture,
+              position: {
+                x: item.position.x,
+                y: item.position.y,
+                z: item.position.z
+              },
+              rotation: item.rotation,
+              price: item.price,
+              category: ""
+            };
+
+            console.log(unityData);
+
+            sendMessage('WebCommunication', 'PlaceFurnitureAt',JSON.stringify(unityData));
+
+          })
+        }
 
         setLastMessage(`레이아웃을 불러왔습니다' (${layoutData.FurnitureCount}개 가구)`);
         console.log('[Load] Layout loaded : ', layoutData);

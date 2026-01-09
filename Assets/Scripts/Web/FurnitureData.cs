@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 /// <summary>
@@ -10,16 +11,18 @@ using UnityEngine;
 [Serializable]
 public class FurnitureData
 {
-    public int id;
+    public string id;
+    public string typeId;
     public string name;
     public PositionData position;
     public float rotation;
     public int price;
     public string category;
 
-    public FurnitureData(int id, string name, Vector3 pos, float rot, int price, string category)
+    public FurnitureData(string id,string typeId, string name, Vector3 pos, float rot, int price, string category)
     {
         this.id = id;
+        this.typeId = typeId;
         this.name = name;
         this.position = new PositionData(pos);
         this.rotation = rot;

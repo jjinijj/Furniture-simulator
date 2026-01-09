@@ -38,7 +38,7 @@ public class WebCommunication : MonoBehaviour
     private static extern void SendMessageToJS(string message);
 
     [DllImport("__Internal")]
-    private static extern void SendFurniturePlaced(string furnitureId, string furnitureName, int price, float x, float y, float z, float rotateY);
+    private static extern void SendFurniturePlaced(string furnitureId, string typeId, string furnitureName, int price, float x, float y, float z, float rotateY);
 
     [DllImport("__Internal")]
     private static extern void SendJSONToJS(string json);
@@ -70,6 +70,7 @@ public class WebCommunication : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
         SendFurniturePlaced(
             furniture.FurnitureId,
+            furniture.ItemData.furnitureTypeId,
             furniture.name, 
             furniture.ItemData.price,
             furniture.transform.position.x, 
@@ -112,12 +113,13 @@ public class WebCommunication : MonoBehaviour
             string cleanname = furniture.name.Replace("Clone", "").Trim();
 
             FurnitureData data = new FurnitureData(
-                id++,
+                furniture.FurnitureId,
+                furniture.ItemData.furnitureTypeId,
                 cleanname,
                 furniture.transform.position,
                 furniture.transform.rotation.y,
-                GetFurniturePrice(furniture.ItemData.displayName),
-                GetFurnitureCategory(furniture.ItemData.displayName)
+                GetFurniturePrice(furniture.ItemData.furnitureTypeId),
+                GetFurnitureCategory(furniture.ItemData.furnitureTypeId)
             );
 
             listData.AddFurniture(data);
@@ -133,10 +135,10 @@ public class WebCommunication : MonoBehaviour
     /// <summary>
     /// 가구 이름으로 가격 가져오기
     /// </summary>
-    private int GetFurniturePrice(string furnitureName)
+    private int GetFurniturePrice(string typeId)
     {
 
-        FurnitureItemData data = FurnitureDatabase.Instance.GetFurnitureData(furnitureName);
+        FurnitureItemData data = FurnitureDatabase.Instance.GetFurnitureData(typeId);
         if(data != null)
         {
             return data.price;
@@ -146,11 +148,11 @@ public class WebCommunication : MonoBehaviour
     }
 
     /// <summary>
-    /// 가구 이름으로 카테고리 찾기
+    /// 가구 아이디로 카테고리 찾기
     /// </summary>
-    private string GetFurnitureCategory(string furnitureName)
+    private string GetFurnitureCategory(string typeId)
     {
-        FurnitureItemData data = FurnitureDatabase.Instance.GetFurnitureData(furnitureName);
+        FurnitureItemData data = FurnitureDatabase.Instance.GetFurnitureData(typeId);
         if(data != null)
         {
             return data.category;
@@ -203,9 +205,6 @@ public class WebCommunication : MonoBehaviour
         SendAllFurnitureData();
     } 
 
-    //==================================================
-    // JavaScript -> Unity (JS -> C#)
-    //==================================================
     /// <summary>
     /// 가구 선택 요청
     /// </summary>
@@ -252,6 +251,49 @@ public class WebCommunication : MonoBehaviour
         }
 
         Debug.LogWarning($"[Unity] Furniture not found: {furnitureId}");
+    }
+
+    public void PlaceFurnitureAt(string dataJson)
+    {
+        try
+        {
+            FurnitureData data = JsonUtility.FromJson<FurnitureData>(dataJson);
+
+            if (FurnitureDatabase.Instance == null)
+            {
+                Debug.LogError("[WebCommunication] FurnitureDatabase not found!");
+                return;
+            }
+
+            // UUID로 검색! typdId
+            FurnitureItemData itemData = FurnitureDatabase.Instance.GetFurnitureByTypeId(data.typeId);
+
+            if (itemData == null)
+            {
+                Debug.LogWarning($"[WebCommunication] Furniture type not found: {data.typeId}");
+                return;
+            }
+
+            // 위치와 회전
+            Vector3 position = new Vector3(data.position.x, data.position.y, data.position.z);
+            Quaternion rotation = Quaternion.Euler(0, data.rotation, 0);
+
+            // 가구 생성
+            GameObject placedFurniture = Instantiate(itemData.prefab, position, rotation);
+
+            // 기존 ID 사용
+            Furniture furnitureScript = placedFurniture.GetComponent<Furniture>();
+            if (furnitureScript != null)
+            {
+                furnitureScript.SetId(data.id);
+            }
+
+            Debug.Log($"[WebCommunication] Furniture placed: {data.name} (Type: {data.typeId}, Instance: {data.id})");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[WebCommunication] Error: {e.Message}");
+        }
     }
     
 
