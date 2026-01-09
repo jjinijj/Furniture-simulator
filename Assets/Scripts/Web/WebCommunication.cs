@@ -38,7 +38,7 @@ public class WebCommunication : MonoBehaviour
     private static extern void SendMessageToJS(string message);
 
     [DllImport("__Internal")]
-    private static extern void SendFurniturePlaced(string furnitureName, float x, float y, float z, float rotateY);
+    private static extern void SendFurniturePlaced(string furnitureId, string typeId, string furnitureName, int price, float x, float y, float z, float rotateY);
 
     [DllImport("__Internal")]
     private static extern void SendJSONToJS(string json);
@@ -62,18 +62,24 @@ public class WebCommunication : MonoBehaviour
     /// 가구 배치 정보를 JavaScript로 전송
     /// </summary>
 
-    public void NotifyFurniturePlaced(string furnitureName, Vector3 position, Quaternion rotation)
+    public void NotifyFurniturePlaced(Furniture furniture)
     {
-        float rotationY = rotation.eulerAngles.y;
+        float rotationY = furniture.transform.rotation.eulerAngles.y;
+        Debug.Log(furniture.FurnitureId);
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         SendFurniturePlaced(
-            furnitureName, 
-            position.x, position.y, position.z,
+            furniture.FurnitureId,
+            furniture.ItemData.furnitureTypeId,
+            furniture.name, 
+            furniture.ItemData.price,
+            furniture.transform.position.x, 
+            furniture.transform.position.y, 
+            furniture.transform.position.z,
             rotationY);
-        Debug.Log($"[Unity -> JS] Furniture Placed : {furnitureName} at {position}, rotation: {rotationY}");
+        Debug.Log($"[Unity -> JS] Furniture Placed : {furniture.name} at {furniture.transform.position}, rotation: {rotationY}");
 #else
-        Debug.Log($"[Unity -> JS (Editor)] Furniture Placed : {furnitureName} at {position}, rotation: {rotationY}");
+        Debug.Log($"[Unity -> JS (Editor)] Furniture Placed : {furniture.name} at {furniture.transform.position}, rotation: {rotationY}");
 #endif
     }
 
@@ -107,12 +113,13 @@ public class WebCommunication : MonoBehaviour
             string cleanname = furniture.name.Replace("Clone", "").Trim();
 
             FurnitureData data = new FurnitureData(
-                id++,
+                furniture.FurnitureId,
+                furniture.ItemData.furnitureTypeId,
                 cleanname,
                 furniture.transform.position,
                 furniture.transform.rotation.y,
-                GetFurniturePrice(cleanname),
-                GetFurnitureCategory(cleanname)
+                GetFurniturePrice(furniture.ItemData.furnitureTypeId),
+                GetFurnitureCategory(furniture.ItemData.furnitureTypeId)
             );
 
             listData.AddFurniture(data);
@@ -128,48 +135,27 @@ public class WebCommunication : MonoBehaviour
     /// <summary>
     /// 가구 이름으로 가격 가져오기
     /// </summary>
-    private int GetFurniturePrice(string furnitureName)
+    private int GetFurniturePrice(string typeId)
     {
-        // TODO 임시데이터를 실제 데이터로 교체
-        Dictionary<string, int> prices = new Dictionary<string, int>
-        {
-            {"Sofa", 300000},
-            {"Table", 150000},
-            {"Chair", 80000},
-            {"Bed", 500000},
-            {"Bookshelf", 200000},
-            {"Desk", 180000},
-        };
 
-        foreach(var key in prices.Keys)
+        FurnitureItemData data = FurnitureDatabase.Instance.GetFurnitureData(typeId);
+        if(data != null)
         {
-            if (furnitureName.Contains(key))
-            {
-                return prices[key];
-            }
+            return data.price;
         }
 
-        // TODO 가격정보가 없을 때 얼마로 처리할지 결정
-        return 100000;
+        return 0;
     }
 
     /// <summary>
-    /// 가구 이름으로 카테고리 찾기
+    /// 가구 아이디로 카테고리 찾기
     /// </summary>
-    private string GetFurnitureCategory(string furnitureName)
+    private string GetFurnitureCategory(string typeId)
     {
-        //TODO 실제 데이터로 교체
-        if(furnitureName.Contains("Sofa") || furnitureName.Contains("Table"))
+        FurnitureItemData data = FurnitureDatabase.Instance.GetFurnitureData(typeId);
+        if(data != null)
         {
-            return "Living";
-        }
-        else if (furnitureName.Contains("Bed"))
-        {
-            return "Bedroom";
-        }
-        else if(furnitureName.Contains("Desk") || furnitureName.Contains("Bookshelf"))
-        {
-            return "Study";
+            return data.category;
         }
 
         return "etc";
@@ -219,6 +205,98 @@ public class WebCommunication : MonoBehaviour
         SendAllFurnitureData();
     } 
 
+    /// <summary>
+    /// 가구 선택 요청
+    /// </summary>
+    public void SelectFurnitureFromJS(string furnitureindex)
+    {
+        Debug.Log($"[JS -> Unity] Select Furniture : {furnitureindex}");
+
+        int index;
+        if(int.TryParse(furnitureindex, out index))
+        {
+            FurniturePlacer placer = FindAnyObjectByType<FurniturePlacer>();
+            if(placer != null)
+            {
+                placer.SelectFurnitureForPlacement(index);
+                Debug.Log($"[Unity] Furiture {index}");
+            }
+            else
+            {
+                Debug.LogWarning($"[Unity] FurniturePlacer not found!");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[Unity] Invalid furnitureIndex : {furnitureindex}");
+        }
+    }
+
+    /// <summary>
+    /// 가구 삭제 요청
+    /// </summary>
+    public void DeleteFurnitureFromJS(string furnitureId)
+    {
+        Debug.Log($"[JS -> Unity] Delete Furniture: {furnitureId}");
+
+        Furniture[] allFuniture = FindObjectsByType<Furniture>(FindObjectsSortMode.None);   
+        foreach(Furniture furniture in allFuniture)
+        {
+            if(furniture.FurnitureId == furnitureId)
+            {
+                Debug.Log($"[Unity] Furniture deleted : {furnitureId}");
+                furniture.Delete();
+                return;
+            }
+        }
+
+        Debug.LogWarning($"[Unity] Furniture not found: {furnitureId}");
+    }
+
+    public void PlaceFurnitureAt(string dataJson)
+    {
+        try
+        {
+            FurnitureData data = JsonUtility.FromJson<FurnitureData>(dataJson);
+
+            if (FurnitureDatabase.Instance == null)
+            {
+                Debug.LogError("[WebCommunication] FurnitureDatabase not found!");
+                return;
+            }
+
+            // UUID로 검색! typdId
+            FurnitureItemData itemData = FurnitureDatabase.Instance.GetFurnitureByTypeId(data.typeId);
+
+            if (itemData == null)
+            {
+                Debug.LogWarning($"[WebCommunication] Furniture type not found: {data.typeId}");
+                return;
+            }
+
+            // 위치와 회전
+            Vector3 position = new Vector3(data.position.x, data.position.y, data.position.z);
+            Quaternion rotation = Quaternion.Euler(0, data.rotation, 0);
+
+            // 가구 생성
+            GameObject placedFurniture = Instantiate(itemData.prefab, position, rotation);
+
+            // 기존 ID 사용
+            Furniture furnitureScript = placedFurniture.GetComponent<Furniture>();
+            if (furnitureScript != null)
+            {
+                furnitureScript.SetId(data.id);
+            }
+
+            Debug.Log($"[WebCommunication] Furniture placed: {data.name} (Type: {data.typeId}, Instance: {data.id})");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[WebCommunication] Error: {e.Message}");
+        }
+    }
+    
+
     // ============================================
     // 테스트용 메서드
     // ============================================
@@ -234,7 +312,7 @@ public class WebCommunication : MonoBehaviour
         // 테스트: T 키로 가구 배치 알림
         if (Input.GetKeyDown(KeyCode.T))
         {
-            NotifyFurniturePlaced("TestSofa", new Vector3(1, 0, 1), Quaternion.Euler(0, 45, 0));
+            //NotifyFurniturePlaced("TestSofa", new Vector3(1, 0, 1), Quaternion.Euler(0, 45, 0));
         }
 
         if (Input.GetKeyDown(KeyCode.J))

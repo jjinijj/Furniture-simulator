@@ -7,6 +7,8 @@ public class Furniture : MonoBehaviour
     public Color normalColor = Color.white;
     public Color selectedColor = Color.cyan;
 
+    private FurnitureItemData data;
+    public FurnitureItemData ItemData => data;
     private bool isSelected = false;
     private bool isDragging = false;
     private float heightOffset = 0.5f;
@@ -17,6 +19,27 @@ public class Furniture : MonoBehaviour
 
     private Vector3 originPosition;
     private Quaternion originRotation;
+
+    [SerializeField]
+    private string furnitureId; // 고유 id
+    public string FurnitureId => furnitureId;
+    public void SetId(string id)
+    {
+        if(string.IsNullOrEmpty(furnitureId))
+        {
+            furnitureId = id;
+            Debug.Log($"Furniture ID set : {id}");
+        }
+        else
+        {
+            Debug.LogWarning("ID already set");
+        }
+    }
+
+    public void SetData(FurnitureItemData furnitureItemdata)
+    {
+        data = furnitureItemdata;
+    }
 
     void Start()
     {

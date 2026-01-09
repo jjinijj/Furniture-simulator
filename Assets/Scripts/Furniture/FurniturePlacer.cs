@@ -1,11 +1,9 @@
+using System;
 using TMPro;
 using UnityEngine;
 
 public class FurniturePlacer : MonoBehaviour
 {
-    [Header("Furniture Settings")]
-    public GameObject[] furniturePrefabs; // 가구 프리팹 배열
-
     [Header("Placement Settings")]
     public LayerMask floorLayer; // 바닥 레이어
     public LayerMask furnitureLayer; // 가구 레이어
@@ -15,6 +13,7 @@ public class FurniturePlacer : MonoBehaviour
     public Color ghostColor = new Color(1f, 1f, 1f, 0.5f); // 반투명
 
     private int selectedFurnitureIndex = -1; // 현재 선택된 가구 인덱스
+    private FurnitureItemData furnitureItemData; // 현재 선택된 가구아이템 데이터
     private Camera mainCamera;
     private GameObject ghostFurniture;
     private MaterialPropertyBlock ghostMBP;
@@ -55,7 +54,7 @@ public class FurniturePlacer : MonoBehaviour
     {
         // 키버튼으로 설치할 가구 선택
         int newIndex = GetNumberKeyInput();
-        if(newIndex != -1 && newIndex < furniturePrefabs.Length)
+        if(newIndex != -1 && newIndex < FurnitureDatabase.Instance.GetFurnitureCount())
         {
             SelectFurnitureForPlacement(newIndex);
         }
@@ -65,11 +64,12 @@ public class FurniturePlacer : MonoBehaviour
         // 설치모드 : 가구 설치, 가구 회전, 설치모드 취소
         if(currentMode == MODE.PLACE_MODE)
         {
-            
-
             if (Input.GetMouseButtonDown(0))
             {
-                PlaceFurniture();
+                if(furnitureItemData != null)
+                {
+                    PlaceFurniture(furnitureItemData);
+                }
             }
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -148,11 +148,19 @@ public class FurniturePlacer : MonoBehaviour
         }
     }
 
-    void SelectFurnitureForPlacement(int index)
+    public void SelectFurnitureForPlacement(int index)
     {
         // 이전과 같은 가구면 무시
         if(currentMode == MODE.PLACE_MODE && selectedFurnitureIndex == index)
             return;
+
+
+        furnitureItemData = FurnitureDatabase.Instance.GetFurnitureData(index);
+        if(furnitureItemData == null)
+        {
+            Debug.LogWarning($"FurnitureItemData is null : {selectedFurnitureIndex}");
+            return;
+        }
 
         // 배치모드
         selectedFurnitureIndex = index;
@@ -162,25 +170,25 @@ public class FurniturePlacer : MonoBehaviour
         furnitureSelector.DeselectCurrentFurniture();
 
         // 고스트 생성
-        CreateGhostFurniture();
+        CreateGhostFurniture(furnitureItemData);
 
         // UI 업데이트
         UpdateSelectedMarkUI();
 
-        Debug.Log($"배치모드 : {furniturePrefabs[index].name}");
+        Debug.Log($"배치모드 : {furnitureItemData.displayName}");
     }
 
-    void CreateGhostFurniture()
+    void CreateGhostFurniture(FurnitureItemData data)
     {
         // 기존 고스트 제거
         if (ghostFurniture != null)
         {
             Destroy(ghostFurniture);
         }
-        
+
         // 고스트 생성
         ghostFurniture = Instantiate(
-            furniturePrefabs[selectedFurnitureIndex],
+            data.prefab,
             Vector3.zero,
             Quaternion.identity
         );
@@ -190,7 +198,7 @@ public class FurniturePlacer : MonoBehaviour
             ghostMBP = new MaterialPropertyBlock();
         }
 
-        ghostFurniture.name = "Ghost_" + furniturePrefabs[selectedFurnitureIndex].name;
+        ghostFurniture.name = "Ghost_" + data.prefab.name;
         SetLayerRecursively(ghostFurniture, LayerMask.NameToLayer("Ghost"));
 
         Furniture furniture = ghostFurniture.GetComponent<Furniture>();
@@ -242,7 +250,7 @@ public class FurniturePlacer : MonoBehaviour
         }
     }
 
-    void PlaceFurniture()
+    void PlaceFurniture(FurnitureItemData data)
     {
         if(ghostFurniture == null)
         {
@@ -259,26 +267,32 @@ public class FurniturePlacer : MonoBehaviour
         Vector3 position = ghostFurniture.transform.position;
         position.y -= 0.5f;
         GameObject furniture = Instantiate(
-            furniturePrefabs[selectedFurnitureIndex],
+            data.prefab,
             position,
             ghostFurniture.transform.rotation
         );
+
+        string furnitureId = System.DateTime.Now.Ticks.ToString();
 
         if(furniture.GetComponent<Furniture>() == null)
         {
             furniture.AddComponent<Furniture>();
         }
 
+        Furniture furnitureScript = furniture.GetComponent<Furniture>();
+        furnitureScript.SetId(furnitureId);
+        furnitureScript.SetData(data);
+
         if(WebCommunication.Instance != null)
         {
             WebCommunication.Instance.NotifyFurniturePlaced(
-                furniturePrefabs[selectedFurnitureIndex].name,
-                furniture.transform.position,
-                furniture.transform.rotation
+                furnitureScript
             );
         }
 
         Debug.Log($"가구 배치: {furniture.name} at {position}");
+
+
     }
 
     void ExitPlacementMode()

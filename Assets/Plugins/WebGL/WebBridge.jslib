@@ -36,12 +36,17 @@ mergeInto(LibraryManager.library, {
      * @param {float} z - Z 좌표
      * @param {float} rotationY - Y축 회전값
      */
-    SendFurniturePlaced: function(furnitureName, x, y, z, rotationY) {
+    SendFurniturePlaced: function(id, typdId, furnitureName,price, x, y, z, rotationY) {
         var name = UTF8ToString(furnitureName);
+        var funitureId = UTF8ToString(id);
+        var furnitureTypeId = UTF8ToString(typdId);
         
         var data = {
             type: 'furniturePlaced',
+            furnitureId: funitureId,
+            typeId : furnitureTypeId,
             furniture: name,
+            price: price,
             position: { x: x, y: y, z: z },
             rotation: rotationY,
             timestamp: Date.now()
@@ -55,8 +60,8 @@ mergeInto(LibraryManager.library, {
         
         if (typeof window.onFurniturePlaced === 'function') {
             window.onFurniturePlaced(data);
-        }
-    },
+    }
+  },
 
     /**
      * Unity에서 JavaScript로 JSON 데이터 전송 (새로 추가!)
