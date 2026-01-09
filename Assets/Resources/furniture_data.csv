@@ -1,9 +1,9 @@
-prefabName,displayName,category,price
-Bed,침대,BedRoom,500000
-Bookcase,책장,Study,200000
-Cabinet,서랍,Living,300000
-Chair,의자,Study,80000
-CoffeeTable,커피 테이블,Living,150000
-DiningChair,식탁 의자,Living,100000
-DiningTable,식탁,Living,250000
-Sofa,소파,Living,400000
+furnitureTypeId,prefabName,displayName,category,price
+furniture-bed-001,Bed,침대,BedRoom,500000
+furniture-bookcase-001,Bookcase,책장,Study,200000
+furniture-cabinet-001,Cabinet,서랍,Living,300000
+furniture-chair-001,Chair,의자,Study,80000
+furniture-coffeetable-001,CoffeeTable,커피 테이블,Living,150000
+furniture-diningchair-001,DiningChair,식탁 의자,Living,100000
+furniture-diningtable-001,DiningTable,식탁,Living,250000
+furniture-sofa-001,Sofa,소파,Living,400000

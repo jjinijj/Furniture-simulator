@@ -26,17 +26,23 @@ public class FurnitureDatabase : MonoBehaviour
         return null;
     }
 
-    public FurnitureItemData GetFurnitureData(string furnitureName)
+    // UUID로 찾기
+    public FurnitureItemData GetFurnitureByTypeId(string furnitureTypeId)
+    {
+        return furnitureList.Find(f => f.furnitureTypeId == furnitureTypeId);
+    }
+
+    public FurnitureItemData GetFurnitureData(string typdId)
     {
         foreach(FurnitureItemData data in furnitureList)
         {
-            if(data.displayName == furnitureName)
+            if(data.furnitureTypeId == typdId)
             {
                 return data;
             }
         }
 
-        Debug.LogWarning($"FurnitureItemData is null. furnitureName : {furnitureName}");
+        Debug.LogWarning($"FurnitureItemData is null. furnitureTypeId : {typdId}");
         return null;
     }
     
@@ -89,17 +95,18 @@ public class FurnitureDatabase : MonoBehaviour
             // 쉼표로 분리
             string[] values = line.Split(',');
             
-            if (values.Length < 4)
+            if (values.Length < 5)
             {
                 Debug.LogWarning($"[FurnitureDatabase] Invalid line {i}: {line}");
                 continue;
             }
             
-            string prefabName = values[0].Trim();
-            string displayName = values[1].Trim();
-            string category = values[2].Trim();
+            string typeId = values[0].Trim();
+            string prefabName = values[1].Trim();
+            string displayName = values[2].Trim();
+            string category = values[3].Trim();
             
-            if (!int.TryParse(values[3].Trim(), out int price))
+            if (!int.TryParse(values[4].Trim(), out int price))
             {
                 Debug.LogWarning($"[FurnitureDatabase] Invalid price for {prefabName}: {values[2]}");
                 continue;
@@ -115,6 +122,7 @@ public class FurnitureDatabase : MonoBehaviour
             {
                 furnitureList.Add(new FurnitureItemData
                 {
+                    furnitureTypeId = typeId,
                     prefab = prefab,
                     prefabName = prefabName,
                     displayName = displayName,

@@ -8,15 +8,13 @@
 
 ## 🚀 현재 진행 중
 
-### Week 7 Day 1-2 (다음! 1/6-7)
-- [ ] 가구 가격 시스템 추가
-  - [ ] 가구 데이터에 가격 추가
-  - [ ] Unity에서 가격 정보 전송
-  - [ ] React에서 가격 정보 수신
-- [ ] 비용 계산기 구현
-  - [ ] 총 비용 계산
-  - [ ] 개별 가구 비용 표시
-  - [ ] UI에 비용 패널 추가
+### Week 7 Day 2 (다음! 1/9 금)
+- [ ] 선택사항: 예산 기능 또는
+- [ ] Day 5-7: 저장/불러오기 시작
+  - [ ] LocalStorage 구조 설계
+  - [ ] 저장 기능 구현
+  - [ ] 불러오기 기능 구현
+  - [ ] UI 버튼 추가
 
 ---
 
@@ -321,6 +319,35 @@
 
 **다음:**
 - Week 7: React UI 개발 (가격 시스템, 비용 계산기)
+
+### Month 2 Week 7 Day 1 (1/8 목) 🎉
+- [x] CSV 기반 가구 데이터 시스템 구축
+  - [x] FurnitureItemData 클래스 생성
+  - [x] FurnitureDatabase (Singleton 패턴)
+  - [x] furniture_data.csv 작성
+  - [x] CSV 파싱 및 데이터 로딩
+- [x] 가격 정보 전송
+  - [x] WebCommunication.cs에 price 파라미터 추가
+  - [x] WebBridge.jslib 수정
+  - [x] Unity → React 가격 정보 전달
+- [x] React 비용 계산 및 UI
+  - [x] FurnitureItem 인터페이스에 price 추가
+  - [x] useMemo로 총 비용 계산
+  - [x] 총 비용 패널 UI 추가
+  - [x] 개별 가구 카드에 가격 표시
+- [x] **CSV 기반 가격 시스템 완성!** 💰
+- [x] **Week 7 Day 1 완료!** 🎊
+
+**학습 내용:**
+- CSV 데이터 관리 패턴
+- Singleton 패턴 (FurnitureDatabase)
+- System.Array.Find 람다 표현식
+- useMemo를 통한 성능 최적화
+- 클래스 책임 분리 (Single Responsibility Principle)
+- FurnitureItemData vs FurnitureDefinition 네이밍
+
+**다음:**
+- Week 7 Day 2+: 저장/불러오기 기능
 
 ---
 
@@ -632,8 +659,8 @@ React + Unity 앱:
 
 ```
 전체 기간: 84일 (12주)
-완료: 22일
-진행률: 36.7%
+완료: 23일
+진행률: 38.3%
 
 시간 단축: 11일!
 - Week 1-3: 7일 단축
@@ -658,7 +685,8 @@ React + Unity 앱:
 ✅ 고유 ID 시스템 구현
 ✅ 삭제 기능 완성
 ✅ UI 테마 시스템 구축
-⏳ Week 7 시작 (가격 시스템)
+✅ CSV 데이터 관리 시스템 💰
+⏳ Week 7 진행 중 (저장/불러오기 예정)
 
 강점:
 ✅ 체계적인 학습
@@ -670,14 +698,14 @@ React + Unity 앱:
 
 ---
 
-**다음 작업:** Week 7 Day 1-2 - 가격 시스템 & 비용 계산기! 🎯
+**다음 작업:** Week 7 Day 2+ - 저장/불러오기 기능! 🎯
 
 ---
 
-**마지막 업데이트:** 2025년 1월 6일 (화)  
-**버전:** 7.0  
-**Status:** Week 6 완료! 🎉  
-**Next:** Week 7 Day 1-2 (1/6-7) - 가격 시스템 구현!
+**마지막 업데이트:** 2025년 1월 8일 (목)  
+**버전:** 7.1  
+**Status:** Week 7 Day 1 완료! 🎉  
+**Next:** Week 7 Day 2+ (1/9~) - 저장/불러오기 구현!
 
-**Week 6 완료! UI 폴리싱까지!** 🚀✨  
-**Week 7 시작: React UI 본격 개발!** 💰🎨
+**CSV 기반 가격 시스템 완성!** 🚀💰  
+**다음은 LocalStorage로 저장/불러오기!** 💾✨

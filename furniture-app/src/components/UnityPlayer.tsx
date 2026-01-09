@@ -1,9 +1,9 @@
-import { setMaxIdleHTTPParsers } from "http";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {Unity, useUnityContext} from 'react-unity-webgl';
 
 interface FurnitureItem{
     furnitureId: string,
+    typeId : string,
     furniture: string;
     price: number;
     position: {x : number, y: number, z: number};
@@ -111,6 +111,111 @@ const UnityPlayer = () => {
             setLastMessage(`가구 삭제됨 : ${furnitureId}`);
         }
     };
+
+    const handleSaveLayout = () => {
+      const layoutData = {
+        saveAt : new Date().toISOString(),
+        furnitureList: placedFurniture,
+        totalCost: totalCost,
+        FurnitureCount: placedFurniture.length,
+      };
+
+      try{
+        localStorage.setItem('furnitureLayout', JSON.stringify(layoutData));
+        setLastMessage('레이아웃이 저장되었습니다.');
+        console.log('[Save] Layout saved:', layoutData);
+      }catch(error){
+        console.error('[Save] effor : ', error);
+        setLastMessage('저장 실패');
+      }
+    };
+
+    const handleLoadLayout = () =>{
+      try{
+        const saved = localStorage.getItem('furnitureLayout');
+
+        if(!saved){
+          setLastMessage('저장된 레이아웃이 없습니다.');
+          console.log('[Load] No saved layout found');
+          return;
+        }
+
+        const layoutData = JSON.parse(saved);
+
+        //데이터 검증
+        if(!layoutData.furnitureList || !Array.isArray(layoutData.furnitureList)){
+          setLastMessage('잘못된 데이터 형식입니다.');
+          console.error('[Load] Invalid data format: ',layoutData);
+          return;
+        }
+
+        // react 상태 업데이트
+        setPlacedFurniture(layoutData.furnitureList);
+
+        // unity에 가구 배치
+        if(isLoaded){
+          layoutData.furnitureList.forEach((item:FurnitureItem)=>{
+
+            // unity FurnitureData구조로 변환
+            const unityData = {
+              id : item.furnitureId,
+              typeId: item.typeId,
+              name: item.furniture,
+              position: {
+                x: item.position.x,
+                y: item.position.y,
+                z: item.position.z
+              },
+              rotation: item.rotation,
+              price: item.price,
+              category: ""
+            };
+
+            console.log(unityData);
+
+            sendMessage('WebCommunication', 'PlaceFurnitureAt',JSON.stringify(unityData));
+
+          })
+        }
+
+        setLastMessage(`레이아웃을 불러왔습니다' (${layoutData.FurnitureCount}개 가구)`);
+        console.log('[Load] Layout loaded : ', layoutData);
+
+      }catch(error){
+        console.error('[Load] Error', error);
+        setLastMessage('불러오기 실패');
+      }
+    };
+
+    //  초기화 함수
+    const handleClearAll = () =>{
+      // 확인 다이얼로그
+      if(!window.confirm('정말로 모든 가구를 삭제하시겠습니가?\n이 작업은 되돌릴 수 없습니다.')){
+        return;
+      }
+
+      try{
+
+        if(isLoaded){
+          placedFurniture.forEach((item)=>{
+            sendMessage('WebCommunication', 'DeleteFurnitureFromJS', item.furnitureId);
+          });
+        }
+
+        // React 상태 초기화
+        setPlacedFurniture([]);
+
+        // localStorage삭제
+        localStorage.removeItem('furnitureLayout');
+
+        setLastMessage('모든 가구가 삭제되었습니다.');
+        console.log('[Clear] All furniture cleared');
+
+      }catch(error){
+        console.error('[Clear] Error:', error);
+        setLastMessage('❌ 초기화 실패!');
+      }
+    }
 
     //  Unity -> React 통신
     useEffect(()=>{
@@ -300,6 +405,113 @@ const UnityPlayer = () => {
           }}>
             {placedFurniture.length}개 가구
           </div>
+        </div>
+
+        {/* 저장/불러오기/초기화 버튼 패널 */}
+        <div style={{
+          backgroundColor: theme.background.surface,
+          padding: theme.spacing.lg,
+          borderRadius: theme.borderRadius.large,
+          marginBottom: theme.spacing.lg,
+          display: 'flex',
+          gap: theme.spacing.md,
+          flexDirection: 'column',
+        }}>
+          <h3 style={{
+            margin: 0,
+            marginBottom: theme.spacing.md,
+            fontSize: theme.fontSize.large,
+            color: theme.text.primary,
+          }}>
+            💾 레이아웃 관리
+          </h3>
+
+          <button
+            onClick={handleSaveLayout}
+            disabled={placedFurniture.length === 0}
+            style={{
+              padding: theme.spacing.lg,
+              backgroundColor: placedFurniture.length > 0 ? theme.accent.primary : theme.background.elevated,
+              color: theme.text.primary,
+              border: 'none',
+              borderRadius: theme.borderRadius.medium,
+              cursor: placedFurniture.length > 0 ? 'pointer' : 'not-allowed',
+              fontSize: theme.fontSize.medium,
+              fontWeight: 'bold',
+              transition: 'all 0.2s ease',
+              opacity: placedFurniture.length > 0 ? 1 : 0.5,
+            }}
+            onMouseEnter={(e) => {
+              if (placedFurniture.length > 0) {
+                e.currentTarget.style.backgroundColor = theme.accent.secondary;
+                e.currentTarget.style.transform = 'scale(1.02)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (placedFurniture.length > 0) {
+                e.currentTarget.style.backgroundColor = theme.accent.primary;
+                e.currentTarget.style.transform = 'scale(1)';
+              }
+            }}
+          >
+            💾 현재 레이아웃 저장
+          </button>
+
+          <button
+            onClick={handleLoadLayout}
+            style={{
+              padding: theme.spacing.lg,
+              backgroundColor: theme.accent.primary,
+              color: theme.text.primary,
+              border: 'none',
+              borderRadius: theme.borderRadius.medium,
+              cursor: 'pointer',
+              fontSize: theme.fontSize.medium,
+              fontWeight: 'bold',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = theme.accent.secondary;
+              e.currentTarget.style.transform = 'scale(1.02)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = theme.accent.primary;
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            📂 저장된 레이아웃 불러오기
+          </button>
+          <button
+            onClick={handleClearAll}
+            disabled={placedFurniture.length === 0}
+            style={{
+              padding: theme.spacing.lg,
+              backgroundColor: placedFurniture.length > 0 ? theme.accent.danger : theme.background.elevated,
+              color: theme.text.primary,
+              border: 'none',
+              borderRadius: theme.borderRadius.medium,
+              cursor: placedFurniture.length > 0 ? 'pointer' : 'not-allowed',
+              fontSize: theme.fontSize.medium,
+              fontWeight: 'bold',
+              transition: 'all 0.2s ease',
+              opacity: placedFurniture.length > 0 ? 1 : 0.5,
+            }}
+            onMouseEnter={(e) => {
+              if (placedFurniture.length > 0) {
+                e.currentTarget.style.backgroundColor = theme.accent.dangerHover;
+                e.currentTarget.style.transform = 'scale(1.02)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (placedFurniture.length > 0) {
+                e.currentTarget.style.backgroundColor = theme.accent.danger;
+                e.currentTarget.style.transform = 'scale(1)';
+              }
+            }}
+          >
+            🗑️ 전체 초기화
+          </button>
+
         </div>
 
         {/* 배치된 가구 목록 */}
