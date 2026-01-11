@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {Unity, useUnityContext} from 'react-unity-webgl';
+import FurnitureList from "./FurnitureList";
 
 interface FurnitureItem{
     furnitureId: string,
@@ -154,6 +155,11 @@ const UnityPlayer = () => {
 
         // unity에 가구 배치
         if(isLoaded){
+
+          // 기존에 설치된 가구들 삭제
+          sendMessage('WebCommunication', 'DeleteAllFurnitureFromJS');
+          
+          // 로드한 가구들 설치s
           layoutData.furnitureList.forEach((item:FurnitureItem)=>{
 
             // unity FurnitureData구조로 변환
@@ -197,9 +203,7 @@ const UnityPlayer = () => {
       try{
 
         if(isLoaded){
-          placedFurniture.forEach((item)=>{
-            sendMessage('WebCommunication', 'DeleteFurnitureFromJS', item.furnitureId);
-          });
+          sendMessage('WebCommunication', 'DeleteAllFurnitureFromJS', );
         }
 
         // React 상태 초기화

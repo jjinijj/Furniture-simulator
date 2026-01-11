@@ -156,8 +156,6 @@ public class Furniture : MonoBehaviour
             originRotation = transform.rotation;
         }
         
-        
-        
         UpdateVisual();
     }
 
