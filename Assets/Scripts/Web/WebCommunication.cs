@@ -107,7 +107,6 @@ public class WebCommunication : MonoBehaviour
         // 데이터 구조 생성
         FurnitureListData listData = new FurnitureListData();
 
-        int id = 0;
         foreach(Furniture furniture in addFuniture)
         {
             string cleanname = furniture.name.Replace("Clone", "").Trim();
@@ -238,19 +237,13 @@ public class WebCommunication : MonoBehaviour
     public void DeleteFurnitureFromJS(string furnitureId)
     {
         Debug.Log($"[JS -> Unity] Delete Furniture: {furnitureId}");
+        FurnitureManager.Instance.RemoveFurniture(furnitureId);
+    }
 
-        Furniture[] allFuniture = FindObjectsByType<Furniture>(FindObjectsSortMode.None);   
-        foreach(Furniture furniture in allFuniture)
-        {
-            if(furniture.FurnitureId == furnitureId)
-            {
-                Debug.Log($"[Unity] Furniture deleted : {furnitureId}");
-                furniture.Delete();
-                return;
-            }
-        }
-
-        Debug.LogWarning($"[Unity] Furniture not found: {furnitureId}");
+    public void DeleteAllFurnitureFromJS()
+    {
+        Debug.Log("[JS -> Unity] Delete All Furniture.");
+        FurnitureManager.Instance.RemoveAllFurnitures();
     }
 
     public void PlaceFurnitureAt(string dataJson)
@@ -283,10 +276,14 @@ public class WebCommunication : MonoBehaviour
 
             // 기존 ID 사용
             Furniture furnitureScript = placedFurniture.GetComponent<Furniture>();
-            if (furnitureScript != null)
+            if (furnitureScript == null)
             {
-                furnitureScript.SetId(data.id);
+                furnitureScript = placedFurniture.AddComponent<Furniture>();
             }
+
+            furnitureScript.SetId(data.id);
+
+            FurnitureManager.Instance.AddFurniture(furnitureScript);
 
             Debug.Log($"[WebCommunication] Furniture placed: {data.name} (Type: {data.typeId}, Instance: {data.id})");
         }

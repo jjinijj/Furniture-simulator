@@ -97,7 +97,7 @@ public class FurnitureSelector : MonoBehaviour
         if (selectedFurniture != null)
         {
             Debug.Log($"Deleting {selectedFurniture.gameObject.name}");
-            selectedFurniture.Delete();
+            FurnitureManager.Instance.RemoveFurniture(selectedFurniture.FurnitureId);
             selectedFurniture = null;
             UpdateUI();
         }

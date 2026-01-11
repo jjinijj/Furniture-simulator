@@ -283,16 +283,14 @@ public class FurniturePlacer : MonoBehaviour
         furnitureScript.SetId(furnitureId);
         furnitureScript.SetData(data);
 
+        FurnitureManager.Instance.AddFurniture(furnitureScript);
+
         if(WebCommunication.Instance != null)
         {
-            WebCommunication.Instance.NotifyFurniturePlaced(
-                furnitureScript
-            );
+            WebCommunication.Instance.NotifyFurniturePlaced(furnitureScript);
         }
 
         Debug.Log($"가구 배치: {furniture.name} at {position}");
-
-
     }
 
     void ExitPlacementMode()
