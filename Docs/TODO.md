@@ -2,19 +2,19 @@
 
 **프로젝트:** Unity + React 가구 배치 시뮬레이터  
 **기간:** 2025년 12월 - 2026년 3월  
-**마지막 업데이트:** 2025년 1월 4일
+**마지막 업데이트:** 2025년 1월 11일
 
 ---
 
 ## 🚀 현재 진행 중
 
-### Week 7 Day 2 (다음! 1/9 금)
-- [ ] 선택사항: 예산 기능 또는
-- [ ] Day 5-7: 저장/불러오기 시작
-  - [ ] LocalStorage 구조 설계
-  - [ ] 저장 기능 구현
-  - [ ] 불러오기 기능 구현
-  - [ ] UI 버튼 추가
+### Week 7 Day 3 (다음! 1/11 일)
+- [ ] Unity 정리 작업
+  - [ ] 테스트용 번호키 입력 제거
+  - [ ] Unity 임시 UI 제거
+  - [ ] 빈 공간 클릭 시 선택 해제
+  - [ ] 가구가 벽 뚫는 문제 수정
+  - [ ] React 회전 버튼 추가 (키보드 유지)
 
 ---
 
@@ -346,8 +346,43 @@
 - 클래스 책임 분리 (Single Responsibility Principle)
 - FurnitureItemData vs FurnitureDefinition 네이밍
 
+### Month 2 Week 7 Day 2 (1/9-11) 🎉
+- [x] LocalStorage 저장/불러오기 시스템 (1/9-10 새벽)
+  - [x] 점진적 개발 방식 (저장 → UI → 통신)
+  - [x] 저장 기능 (localStorage.setItem)
+  - [x] 불러오기 (React UI 복원)
+  - [x] 초기화 (전체 삭제)
+  - [x] Unity 씬 복원 (PlaceFurnitureAt)
+  - [x] 불러오기 전 전체 삭제 (ClearAllFurniture)
+- [x] 데이터 구조 개선
+  - [x] furnitureTypeId UUID 추가
+  - [x] CSV에 furnitureTypeId 추가
+  - [x] UUID 기반 가구 검색
+  - [x] 이름 중복 문제 해결
+- [x] FurnitureManager 리팩토링 (1/11)
+  - [x] Singleton 패턴
+  - [x] Dictionary 기반 가구 추적
+  - [x] AddFurniture, RemoveFurniture
+  - [x] FindFurnitureById, GetAllFurniture
+  - [x] ClearAll (전체 삭제)
+  - [x] 패턴 2 (단방향 의존성) 채택
+  - [x] FindObjectsOfType 제거
+- [x] **저장/불러오기 완성!** 💾
+- [x] **FurnitureManager 완성!** 🎉
+- [x] **Week 7 Day 2 완료!** 🎊
+
+**학습 내용:**
+- LocalStorage API (setItem, getItem, removeItem)
+- 점진적 개발 (빠른 피드백 루프, 독립적 테스트)
+- Dictionary vs List 성능 (O(1) vs O(n))
+- ContainsKey, TryGetValue (KeyNotFoundException 방지)
+- 아키텍처 패턴 3가지 비교
+- 단방향 의존성 설계 (실무 표준)
+- UUID 기반 시스템 설계
+- YAGNI 원칙
+
 **다음:**
-- Week 7 Day 2+: 저장/불러오기 기능
+- Week 7 Day 3: Unity 정리 작업
 
 ---
 
@@ -555,22 +590,20 @@
 ✅ Week 3: WebGL 통신 & 빌드 (3일) - 100%
 ⏭️ Week 4: 스킵 (시간 절약)
 ✅ Week 5: React 기초 (3일) - 100%
-🔥 Week 6: Unity-React 통합 (7일) - 43% (Day 3 완료)
-  ✅ Day 1: 준비 완료
-  ✅ Day 2: 통합 성공
-  ✅ Day 3: Unity → React 통신 완료
-  ⏳ Day 4: React → Unity 통신
-  □ Day 5-6: UI 추가
-  □ Day 7: 테스트
-□ Week 7: UI 구현 (7일) - 0%
+✅ Week 6: Unity-React 통합 (7일) - 100%
+🔥 Week 7: React UI 개발 (7일) - 43% (Day 2 완료)
+  ✅ Day 1: CSV 가격 시스템
+  ✅ Day 2: 저장/불러오기 + FurnitureManager
+  ⏳ Day 3: Unity 정리 작업
+  □ Day 4-7: 추가 기능 또는 Week 8로
 □ Week 8: 배포 (7일) - 0%
 
-완료: 20일 / 60일
-진행률: 33.3%
-시간 단축: 10일! 🔥
-상태: 빠른 진행 중 🚀
-현재 날짜: 2025년 1월 3일 (토)
-다음: 2025년 1월 4일 (일) - Week 6 Day 4 시작!
+완료: 24일 / 60일
+진행률: 40%
+시간 단축: 11일! 🔥
+상태: 순조로운 진행 중 🚀
+현재 날짜: 2026년 1월 11일 (일)
+다음: Week 7 Day 3 - Unity 정리!
 ```
 
 ---
@@ -659,8 +692,8 @@ React + Unity 앱:
 
 ```
 전체 기간: 84일 (12주)
-완료: 23일
-진행률: 38.3%
+완료: 24일
+진행률: 40%
 
 시간 단축: 11일!
 - Week 1-3: 7일 단축
@@ -686,26 +719,29 @@ React + Unity 앱:
 ✅ 삭제 기능 완성
 ✅ UI 테마 시스템 구축
 ✅ CSV 데이터 관리 시스템 💰
-⏳ Week 7 진행 중 (저장/불러오기 예정)
+✅ LocalStorage 저장/불러오기 💾
+✅ FurnitureManager 리팩토링 🎯
+⏳ Week 7 Day 3 진행 중 (Unity 정리)
 
 강점:
 ✅ 체계적인 학습
 ✅ 문제 해결 능력
 ✅ 빠른 학습 속도
 ✅ 꾸준함
-✅ 오타도 스스로 잡아냄!
+✅ 코드 품질 신경씀
+✅ 아키텍처 고민
 ```
 
 ---
 
-**다음 작업:** Week 7 Day 2+ - 저장/불러오기 기능! 🎯
+**다음 작업:** Week 7 Day 3 - Unity 정리 작업! 🎯
 
 ---
 
-**마지막 업데이트:** 2025년 1월 8일 (목)  
-**버전:** 7.1  
-**Status:** Week 7 Day 1 완료! 🎉  
-**Next:** Week 7 Day 2+ (1/9~) - 저장/불러오기 구현!
+**마지막 업데이트:** 2026년 1월 11일 (일)  
+**버전:** 7.2  
+**Status:** Week 7 Day 2 완료! 🎉  
+**Next:** Week 7 Day 3 (1/11) - Unity 정리 (번호키 제거, UI 정리, 버그 수정)!
 
-**CSV 기반 가격 시스템 완성!** 🚀💰  
-**다음은 LocalStorage로 저장/불러오기!** 💾✨
+**저장/불러오기 + FurnitureManager 완성!** 🚀💾  
+**다음은 Unity 정리 작업!** 🧹✨
