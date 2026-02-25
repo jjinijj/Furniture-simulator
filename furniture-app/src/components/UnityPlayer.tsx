@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {Unity, useUnityContext} from 'react-unity-webgl';
-import FurnitureList from "./FurnitureList";
 
 interface FurnitureItem{
     furnitureId: string,

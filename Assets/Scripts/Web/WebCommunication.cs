@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using Unity.Mathematics;
 using System.Collections.Generic;
+using System.Collections;
 
 /// <summary>
 /// Unity와 JavaScript 간 통신을 관리하는 클래스
@@ -30,6 +31,28 @@ public class WebCommunication : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        StartCoroutine(SendFurnitureListWhenReady());
+    }
+
+    IEnumerator SendFurnitureListWhenReady()
+    {
+        while(FurnitureDatabase.Instance == null)
+        {
+            yield return null;
+        }
+
+        while(FurnitureDatabase.Instance.IsLoaded == false)
+        {
+            yield return null;
+        }
+
+        Debug.Log("load");
+
+        SendFurnitureList();
+    }
+
     //==================================================
     // Unity -> JavaScript (C# -> JS)
     //==================================================
@@ -42,11 +65,14 @@ public class WebCommunication : MonoBehaviour
 
     [DllImport("__Internal")]
     private static extern void SendJSONToJS(string json);
+
+    [DllImport("__Internal")]
+    price static extern void SendFurnitureListToJS(string json);
 #endif
 
-///<Summary>
-/// JsavaScript로 일반 메시지 전송
-/// </Summary>
+    ///<Summary>
+    /// JsavaScript로 일반 메시지 전송
+    /// </Summary>
 
     public void SendToJavaScript(string message)
     {
@@ -129,6 +155,21 @@ public class WebCommunication : MonoBehaviour
         SendJSON(json);
 
         Debug.Log($"[Furniture Data] sent {listData.furnitureCount} furniture, Total: {listData.totalCost:N0}원");
+    }
+
+    public void SendFurnitureList()
+    {
+        List<FurnitureItemData> list = FurnitureDatabase.Instance.furnitureList;
+        Debug.Log(list.Count);
+        string json = JsonUtility.ToJson(list, true);
+        Debug.Log(json);
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        SendFurnitureListToJS(json);
+        Debug.Log($"[Unity -> JS] {message}");
+#else   
+        Debug.Log($"[Unity -> JS(Editor) {json}]");
+#endif
     }
 
     /// <summary>

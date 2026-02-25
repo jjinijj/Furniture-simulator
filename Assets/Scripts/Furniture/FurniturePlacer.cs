@@ -52,12 +52,14 @@ public class FurniturePlacer : MonoBehaviour
 
     void HandleInput()
     {
+    #if UNITY_EDITOR
         // 키버튼으로 설치할 가구 선택
         int newIndex = GetNumberKeyInput();
         if(newIndex != -1 && newIndex < FurnitureDatabase.Instance.GetFurnitureCount())
         {
             SelectFurnitureForPlacement(newIndex);
         }
+    #endif
 
         HandleRotationInput();
 
@@ -101,11 +103,13 @@ public class FurniturePlacer : MonoBehaviour
                 furnitureSelector.DeselectCurrentFurniture();
             }
 
+#if UNITY_EDITOR
             // 설치된 가구 삭제
             if (Input.GetKeyDown(KeyCode.D))
             {
                 furnitureSelector.TryDeleteSelected();   
             }
+#endif
 
         }        
     }
@@ -122,6 +126,7 @@ public class FurniturePlacer : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
     int GetNumberKeyInput()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) return 0;
@@ -135,6 +140,7 @@ public class FurniturePlacer : MonoBehaviour
         
         return -1;
     }
+#endif
     
     void HandleRotate(float angle)
     {
