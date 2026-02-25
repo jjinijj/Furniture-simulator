@@ -103,6 +103,24 @@ mergeInto(LibraryManager.library, {
             console.error('[Unity → JS] JSON Parse Error:', e);
             console.error('Raw JSON:', jsonString);
         }
+    },
+
+     /**
+     * Unity에서 JavaScript로 일반 메시지 전송
+     * @param {string} message - 전송할 메시지
+     */
+    SendFurnitureListToJS: function(message) {
+        var msg = UTF8ToString(message);
+        
+        console.log('[Unity → JS] Message:', msg);
+        
+        window.dispatchEvent(new CustomEvent('FurnitureDataList', {
+            detail: { message: msg }
+        }));
+        
+        if (typeof window.onUnityMessage === 'function') {
+            window.onUnityMessage(msg);
+        }
     }
 
 });

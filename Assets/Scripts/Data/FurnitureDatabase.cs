@@ -8,9 +8,11 @@ public class FurnitureDatabase : MonoBehaviour
     
     // Inspector에서 설정
     public GameObject[] furniturePrefabs;
+
+    public bool IsLoaded {get; private set; } 
     
     // 로드된 데이터
-    private List<FurnitureItemData> furnitureList;
+    public List<FurnitureItemData> furnitureList {get; private set; }
     
     // Getter
     public int GetFurnitureCount()
@@ -48,6 +50,8 @@ public class FurnitureDatabase : MonoBehaviour
     
     void Awake()
     {
+
+        IsLoaded = false;
         // Singleton 설정
         if (Instance == null)
         {
@@ -139,5 +143,6 @@ public class FurnitureDatabase : MonoBehaviour
         }
         
         Debug.Log($"[FurnitureDatabase] Total furniture loaded: {furnitureList.Count}");
+        IsLoaded = true;
     }
 }
